@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
     public int Id;
-    public PlayerState State;
     public ShipComponent PickedComponent;
     public Rigidbody PhysicsRigidBody;
 
@@ -27,15 +25,15 @@ public class Player : MonoBehaviour
 
     public void DoAction()
     {
-        if (PickedComponent  == null)
+        if (PickedComponent == null)
         {
             // Get advesary ships
-            var availableShips = GetObjectInRange<Ship>(INTERACTION_DIST, (s) => s.OwnerId != Id);
+            var availableShips = GetObjectInRange<Ship>(INTERACTION_DIST, (s) => true/*s.OwnerId != Id*/);
             var advesaryShip = (availableShips.Count > 0) ? availableShips[0] : null;
             var availableShipParts  = GetObjectInRange<ShipComponent>(INTERACTION_DIST, (sc) => !sc.IsUsed);
             var selectedShipPart = (availableShipParts.Count > 0) ? availableShipParts[UnityEngine.Random.Range(0, availableShipParts.Count)] : null;
 
-            if (advesaryShip != null)
+            if (advesaryShip != null && advesaryShip.transform.childCount > 0)
             {
                 var stolenPart = advesaryShip.RemoveShipComponent();
                 Pick(stolenPart);
@@ -48,14 +46,18 @@ public class Player : MonoBehaviour
         else
         {
             // Get my ship
-            var availableShips = GetObjectInRange<Ship>(INTERACTION_DIST, (s) => s.OwnerId == Id);
+            var availableShips = GetObjectInRange<Ship>(INTERACTION_DIST, (s) => true/*s.OwnerId == Id*/);
             var ownerShip = (availableShips.Count > 0) ? availableShips[0] : null;
 
             if (ownerShip != null)
             {
                 PickedComponent.Snap(ownerShip);
+                PickedComponent = null;
+                /*
+                
+                */
             }
-            else 
+            else
             {
                 Drop();
             }

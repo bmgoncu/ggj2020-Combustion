@@ -2,7 +2,7 @@
 using UnityEngine;
 
 /* 3 tip component  var */
-public enum ShipComponentType { ORBITER, FUEL_TANK, ENGINE }
+public enum ShipComponentType { ORBITER, FUEL_TANK, ENGINE, CHAIR }
 
 public class ShipComponent : MonoBehaviour
 {

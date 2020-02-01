@@ -31,21 +31,10 @@
                 }
                 
                 if (msg[0] == "STARTING") {
-                    status = "inGame";
+                    // timer?
+                    status = "inGame"
                     document.getElementById('startMenu').style.display = "none";
                     document.getElementById('inGame').style.display = "block";
-                }
-
-                if (msg[0] == "ESCAPEATTEMPT" || msg[0] == "END") {
-                    status = "none"
-                    document.getElementById('waiting').style.display = "block";
-                    document.getElementById('inGame').style.display = "none";
-                }
-
-                if (msg[0] == "RESTART") {
-                    status = "none"
-                    document.getElementById('startMenu').style.display = "block";
-                    document.getElementById('waiting').style.display = "none";
                 }
             }
 
@@ -100,13 +89,13 @@
             text-align: center;
         }
 
-        #inGame, #waiting {
+        #inGame {
             width: 100%;
             height: 100%;
             display: none;
         }
 
-        #connectedDevices, #waitForMaster, #ending, #waitForGame {
+        #connectedDevices, #waitForMaster {
             width: 100%;
             height: 50%;
             text-align: center;
@@ -138,10 +127,6 @@
         <div id="startButton" onclick="sendStart()"><i class="fas fa-play-circle"></i></div>
         <div id="waitForMaster"><i class="fas fa-hourglass-half"></i></div>
     </div>
-    <div id="waiting">
-        <div id="ending"></div>
-        <div id="waitForGame"><i class="fas fa-hourglass-half"></i></div>
-    </div>
     <script>   
         var joystick = new VirtualJoystick({ container: document.getElementById('joystick'), mouseSupport: true, });
         joystick.addEventListener('touchEnd', function () { changeMovement(0, 0); });
@@ -169,10 +154,11 @@
         var actionButton = document.getElementById('button');
         actionButton.addEventListener('touchstart', function () { sendAction(true); });
         actionButton.addEventListener('touchend', function () { sendAction(false); });
+
         actionButton.addEventListener('mousedown', function () { sendAction(true); });
         actionButton.addEventListener('mouseup', function () { sendAction(false); });
 
-        function sendAction(pressed) { 
+        function sendAction(pressed) {
             if (pressed) {
                 holdTimer = setTimeout(() => {
                     holdTimer = null;

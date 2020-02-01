@@ -38,6 +38,12 @@ public class StageManager : MonoBehaviour
         PlaceObject(Engine, playerCount);
         PlaceObject(FuelTank, playerCount);
         PlaceObject(Toilet, playerCount);
+
+        int counter = 0;
+        foreach(Ship ship in FindObjectsOfType<Ship>())
+        {
+            ship.OwnerId = ++counter;
+        }
     }
 
     public void PlaceObject(GameObject obj, int count)
