@@ -52,7 +52,7 @@ public class StageManager : MonoBehaviour
             float dist = _MIN_DIST_;
             do
             {
-                randomPosition = new Vector3(Random.Range(-EXTREMES.x, EXTREMES.x), 0f, Random.Range(EXTREMES.y, EXTREMES.z));
+                randomPosition = new Vector3(Random.Range(-EXTREMES.x, EXTREMES.x), 0.2f, Random.Range(EXTREMES.y, EXTREMES.z));
                 if (Valid(dist, randomPosition))
                 {
                     _instantiated.Add(Instantiate(obj[Random.Range(0,obj.Length)], randomPosition, Quaternion.identity, transform));

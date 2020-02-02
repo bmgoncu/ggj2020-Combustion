@@ -728,7 +728,7 @@ Transform:
   m_GameObject: {fileID: 2592358098132998745}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_Children:
   - {fileID: 462158413343662259}
   - {fileID: 3539917518066939753}
@@ -751,7 +751,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: a52244fec46ff491ba45d370373e3c32, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
@@ -773,6 +773,7 @@ MonoBehaviour:
   Id: 0
   PickedComponent: {fileID: 0}
   PhysicsRigidBody: {fileID: 5629610937189086359}
+  Renderer: {fileID: 5824574972995932620}
   Hand: {fileID: 7881961914468355945}
 --- !u!54 &5629610937189086359
 Rigidbody:

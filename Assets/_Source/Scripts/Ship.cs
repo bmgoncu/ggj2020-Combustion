@@ -6,6 +6,7 @@ public class Ship : MonoBehaviour
 {
     public int OwnerId;
     public ShipStatus StatusUI;
+    public GameObject ExplosionPrefab;
     public List<ShipComponent> ShipComponents { get; private set; } = new List<ShipComponent>();
     public int Capacity;
     public bool Escaped;
@@ -30,10 +31,11 @@ public class Ship : MonoBehaviour
         return removedPart;
     }
 
-    public void SetTotalChancePoint()
+    public float SetTotalChancePoint()
     {
         var point = ShipComponents.Sum(sc => sc.ChancePoint);
         StatusUI.SetValue(point);
+        return point;
     }
 
     public void ResetShip()
@@ -42,5 +44,10 @@ public class Ship : MonoBehaviour
         ShipComponents.Clear();
         Capacity = 0;
         Escaped = false;
+    }
+
+    public void Explode()
+    {
+        Instantiate(ExplosionPrefab, transform);
     }
 }

@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
     public int Id;
     public ShipComponent PickedComponent;
     public Rigidbody PhysicsRigidBody;
+    public SkinnedMeshRenderer Renderer;
 
     public Transform Hand;
 
@@ -23,6 +24,11 @@ public class Player : MonoBehaviour
     {
         PhysicsRigidBody = GetComponent<Rigidbody>();
         _animator = GetComponent<Animator>();
+    }
+
+    public void SetColor(Color color)
+    {
+        Renderer.materials[1].color = color;
     }
 
     void Update()
@@ -62,10 +68,9 @@ public class Player : MonoBehaviour
         vec = vec.normalized;
         PhysicsRigidBody.velocity = new Vector3(vec.x * VELOCITY_MULTIPLIER, 0f, vec.y * VELOCITY_MULTIPLIER);
 
-        float angle = Mathf.Atan2(vec.y, vec.x) - 90f;
+        float angle = Mathf.PI / 2f - Mathf.Atan2(vec.y, vec.x);
         transform.rotation = Quaternion.Euler(0f, angle * Mathf.Rad2Deg, 0f);
         
-
         if  (vec.Equals(Vector2.zero))
         {
             _animator.SetInteger("Param", PickedComponent == null ? 0 : 10);
@@ -155,7 +160,7 @@ public class Player : MonoBehaviour
         comp.transform.SetParent(null);
         PickedComponent = null;
         comp.IsUsed = false;
-        comp.transform.position = new Vector3(comp.transform.position.x, 0f, comp.transform.position.z);
+        comp.transform.position = new Vector3(comp.transform.position.x, 0.2f, comp.transform.position.z);
         comp.transform.localEulerAngles = Vector3.zero;
         return comp;
     }

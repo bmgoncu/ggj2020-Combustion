@@ -24,7 +24,7 @@ public class ShipComponent : MonoBehaviour
         if (ship.ShipComponents.Count == 0)
         {
             ship.AddShipComponent(this);
-            transform.localPosition = Vector3.zero;
+            transform.localPosition = Vector3.up * 0.2f;
             transform.localRotation = Quaternion.identity;
             IsUsed = true;
             return true;

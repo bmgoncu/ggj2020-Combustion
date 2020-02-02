@@ -17,6 +17,8 @@ public class ControlManager : MonoBehaviour
         }
     }
 
+    static int success = 0;
+
     [SerializeField] GameObject playerPrefab;
 
     [SerializeField] HudUI timer;
@@ -173,6 +175,7 @@ public class ControlManager : MonoBehaviour
                     Quaternion.identity, StageManager.Instance.transform)
                     .GetComponent<Player>();
                 PlayersDic[playerIds[i]].Id = playerIds[i];
+                PlayersDic[playerIds[i]].SetColor(GetColorForIndex(i));
             }
         }
         StageManager.Instance.Generate(playerCount);
@@ -181,6 +184,23 @@ public class ControlManager : MonoBehaviour
             AirConsole.instance.Message(key, "STARTING");
         }
         timer.CountDown(21);
+    }
+
+    private Color GetColorForIndex(int i)
+    {
+        switch (i)
+        {
+            case 0:
+                return Color.red;
+            case 1:
+                return Color.green;
+            case 2:
+                return Color.blue;
+            case 3:
+                return Color.magenta;
+            default:
+                return Color.black;
+        }
     }
 
     public void Escape(Ship ship)
@@ -192,7 +212,10 @@ public class ControlManager : MonoBehaviour
                 AirConsole.instance.Message(player.Id, "ESCAPEATTEMPT");
             }
         }
-        ship.transform.DOMove(transform.position + Vector3.up * 10f, 2f);
+        ship.transform.DOMove(transform.position + Vector3.up * 25f, 2f).OnComplete(()=> {
+            success++;
+            ship.transform.position = new Vector3(-3f * success, 25f, -5f);
+        });
     }
 
     public void Death()
@@ -212,13 +235,37 @@ public class ControlManager : MonoBehaviour
 
     IEnumerator EndScreen()
     {
-        // TEMİZLİK //
-        //...
+        Camera.main.transform.DOMove(new Vector3(0f, 25f, -15f), 1f);
+        Camera.main.transform.DORotate(Vector3.zero, 1f).OnComplete(() =>
+        {
+            Sequence cinamatic = DOTween.Sequence();
+            cinamatic.AppendInterval(1.5f);
+            cinamatic.AppendCallback(() => {
+                foreach (var ship in FindObjectsOfType<Ship>())
+                {
+                    ship.StatusUI.gameObject.SetActive(false);
+                    if (Random.Range(0, 1) > ship.SetTotalChancePoint())
+                    {
+                        ship.Explode();
+                        ship.transform.DOMoveY(10, 2);
+                    }
+                    else
+                    {
+                        ship.transform.DOMoveY(50, 2);
+                    }
+                }
+            });
+        });
+        yield return new WaitForSeconds(7f);
         StageManager.Instance.Clean();
-        yield return new WaitForSeconds(10f);
+        Camera.main.transform.DOMove(new Vector3(0f, 7f, -5f), 1f);
+        Camera.main.transform.DORotate(70f * Vector3.right, 1f);
+        yield return new WaitForSeconds(3f);
         foreach (int key in PlayersDic.Keys)
         {
+            PlayersDic[key].transform.position = Vector3.zero;
             AirConsole.instance.Message(key, "RESTART");
         }
+        success = 0;
     }
 }
