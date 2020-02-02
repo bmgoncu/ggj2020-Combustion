@@ -20,7 +20,7 @@ public class HudUI : MonoBehaviour
             _text.text = (int)_timer + "";
             if (_timer < 0f)
             {
-                ControlManager.Instance.Death();
+                //ControlManager.Instance.Death();
             }
         }
     }

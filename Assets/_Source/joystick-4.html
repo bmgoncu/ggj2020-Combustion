@@ -169,10 +169,10 @@
         var actionButton = document.getElementById('button');
         actionButton.addEventListener('touchstart', function () { sendAction(true); });
         actionButton.addEventListener('touchend', function () { sendAction(false); });
-        /*
+        
         actionButton.addEventListener('mousedown', function () { sendAction(true); });
         actionButton.addEventListener('mouseup', function () { sendAction(false); });
-        */
+        
 
         function sendAction(pressed) { 
             if (pressed) {

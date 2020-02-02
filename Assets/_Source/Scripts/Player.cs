@@ -10,6 +10,10 @@ public class Player : MonoBehaviour
     public ShipComponent PickedComponent;
     public Rigidbody PhysicsRigidBody;
 
+    public Transform Hand;
+
+    Animator _animator;
+
     private const int INTERACTION_DIST = 1;
     private const float SHIP_DISTANCE = 3f;
     private const float VELOCITY_MULTIPLIER = 3;
@@ -18,6 +22,7 @@ public class Player : MonoBehaviour
     void Start()
     {
         PhysicsRigidBody = GetComponent<Rigidbody>();
+        _animator = GetComponent<Animator>();
     }
 
     void Update()
@@ -56,8 +61,19 @@ public class Player : MonoBehaviour
     {
         vec = vec.normalized;
         PhysicsRigidBody.velocity = new Vector3(vec.x * VELOCITY_MULTIPLIER, 0f, vec.y * VELOCITY_MULTIPLIER);
-        float angle = Mathf.PI - Mathf.Atan2(vec.y, vec.x);
+
+        float angle = Mathf.Atan2(vec.y, vec.x) - 90f;
         transform.rotation = Quaternion.Euler(0f, angle * Mathf.Rad2Deg, 0f);
+        
+
+        if  (vec.Equals(Vector2.zero))
+        {
+            _animator.SetInteger("Param", PickedComponent == null ? 0 : 10);
+        }
+        else
+        {
+            _animator.SetInteger("Param", PickedComponent == null ? 1 : 11);
+        }
     }
 
     public void DoAction()
@@ -124,8 +140,10 @@ public class Player : MonoBehaviour
     {
         if (PickedComponent != null) return false;
         PickedComponent = component;
-        component.transform.SetParent(transform);
-        component.transform.localPosition = transform.GetChild(0).localPosition;
+        component.transform.SetParent(Hand);
+        component.transform.localPosition = Vector3.zero;
+        component.transform.localEulerAngles = Vector3.zero;
+        //component.transform.localPosition = transform.GetChild(0).localPosition;
         component.IsUsed = true;
         return true;
     }
@@ -138,6 +156,7 @@ public class Player : MonoBehaviour
         PickedComponent = null;
         comp.IsUsed = false;
         comp.transform.position = new Vector3(comp.transform.position.x, 0f, comp.transform.position.z);
+        comp.transform.localEulerAngles = Vector3.zero;
         return comp;
     }
 

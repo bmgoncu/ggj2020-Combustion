@@ -60,7 +60,7 @@ Transform:
   m_GameObject: {fileID: 1365191566706505174}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -5.53}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children:
   - {fileID: 3914834001569377754}
   m_Father: {fileID: 0}
@@ -154,7 +154,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5554145d004c47a68b0a9bc60f93573, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Board: 0
+  Board: {fileID: 0}
   Id: 0
   PickedComponent: {fileID: 0}
   PhysicsRigidBody: {fileID: 3651311058658670821}
+  Hand: {fileID: 0}

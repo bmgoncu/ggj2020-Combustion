@@ -18,9 +18,9 @@ public class StageManager : MonoBehaviour
     const float _MIN_DIST_ = 10f;
     const float _STEP_ = 0.05f;
 
-    [SerializeField] GameObject Engine;
-    [SerializeField] GameObject FuelTank;
-    [SerializeField] GameObject Toilet;
+    [SerializeField] GameObject[] Engine;
+    [SerializeField] GameObject[] FuelTank;
+    [SerializeField] GameObject[] Toilet;
 
     readonly List<GameObject> _instantiated = new List<GameObject>();
 
@@ -28,7 +28,7 @@ public class StageManager : MonoBehaviour
 
     public void Generate(int playerCount)
     {
-        foreach(Player player in FindObjectsOfType<Player>())
+        foreach (Player player in FindObjectsOfType<Player>())
         {
             _players.Add(player.transform.position);
         }
@@ -37,13 +37,13 @@ public class StageManager : MonoBehaviour
         PlaceObject(Toilet, playerCount);
 
         int counter = 0;
-        foreach(Ship ship in FindObjectsOfType<Ship>())
+        foreach (Ship ship in FindObjectsOfType<Ship>())
         {
             ship.OwnerId = ++counter;
         }
     }
 
-    public void PlaceObject(GameObject obj, int count)
+    public void PlaceObject(GameObject[] obj, int count)
     {
         count += Random.Range(-1, 2);
         for (int i = 0; i < count; i++)
@@ -55,7 +55,7 @@ public class StageManager : MonoBehaviour
                 randomPosition = new Vector3(Random.Range(-EXTREMES.x, EXTREMES.x), 0f, Random.Range(EXTREMES.y, EXTREMES.z));
                 if (Valid(dist, randomPosition))
                 {
-                    _instantiated.Add(Instantiate(obj, randomPosition, Quaternion.identity, transform));
+                    _instantiated.Add(Instantiate(obj[Random.Range(0,obj.Length)], randomPosition, Quaternion.identity, transform));
                 }
                 else
                 {
