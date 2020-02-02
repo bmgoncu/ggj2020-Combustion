@@ -4,11 +4,15 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    public Ship Board;
+
     public int Id;
     public ShipComponent PickedComponent;
     public Rigidbody PhysicsRigidBody;
 
-    private const int INTERACTION_DIST = 3;
+    private const int INTERACTION_DIST = 1;
+    private const float SHIP_DISTANCE = 3f;
+    private const float VELOCITY_MULTIPLIER = 3;
 
     // Start is called before the first frame update
     void Start()
@@ -16,29 +20,79 @@ public class Player : MonoBehaviour
         PhysicsRigidBody = GetComponent<Rigidbody>();
     }
 
+    void Update()
+    {
+        if (Board != null)
+        {
+            return;
+        }
+
+        if (transform.position.x < -7.5f)
+        {
+            transform.position = new Vector3(-7.5f, 0f, transform.position.z);
+            PhysicsRigidBody.velocity = new Vector3(0f, 0f, PhysicsRigidBody.velocity.z);
+        }
+
+        if (transform.position.x > 7.5f)
+        {
+            transform.position = new Vector3(7.5f, 0f, transform.position.z);
+            PhysicsRigidBody.velocity = new Vector3(0f, 0f, PhysicsRigidBody.velocity.z);
+        }
+
+        if (transform.position.z < -7f)
+        {
+            transform.position = new Vector3(transform.position.x, 0f, -7f);
+            PhysicsRigidBody.velocity = new Vector3(PhysicsRigidBody.velocity.x, 0f, 0f);
+        }
+
+        if (transform.position.z > 3f)
+        {
+            transform.position = new Vector3(transform.position.x, 0f, 3f);
+            PhysicsRigidBody.velocity = new Vector3(PhysicsRigidBody.velocity.x, 0f, 0f);
+        }
+    }
+
     public void Move(Vector2 vec)
     {
-        PhysicsRigidBody.velocity = new Vector3(vec.x, 0f, vec.y);
+        vec = vec.normalized;
+        PhysicsRigidBody.velocity = new Vector3(vec.x * VELOCITY_MULTIPLIER, 0f, vec.y * VELOCITY_MULTIPLIER);
         float angle = Mathf.PI - Mathf.Atan2(vec.y, vec.x);
         transform.rotation = Quaternion.Euler(0f, angle * Mathf.Rad2Deg, 0f);
     }
 
     public void DoAction()
     {
+        if (Board)
+        {
+            return;
+        }
         if (PickedComponent == null)
         {
             // Get advesary ships
-            var availableShips = GetObjectInRange<Ship>(INTERACTION_DIST, (s) => true/*s.OwnerId != Id*/);
+            var availableShips = GetObjectInRange<Ship>(SHIP_DISTANCE, (s) => s.Escaped == false/*s.OwnerId != Id*/);
             var advesaryShip = (availableShips.Count > 0) ? availableShips[0] : null;
             var availableShipParts  = GetObjectInRange<ShipComponent>(INTERACTION_DIST, (sc) => !sc.IsUsed);
             var selectedShipPart = (availableShipParts.Count > 0) ? availableShipParts[UnityEngine.Random.Range(0, availableShipParts.Count)] : null;
 
-            if (advesaryShip != null && advesaryShip.transform.childCount > 0)
+            bool shipiscloser = true;
+            if (selectedShipPart && advesaryShip)
+            {
+                shipiscloser = Vector3.Distance(transform.position, advesaryShip.transform.position) < Vector3.Distance(transform.position, selectedShipPart.transform.position);
+            }
+
+            if (advesaryShip != null && advesaryShip.transform.childCount > 0 && shipiscloser)
             {
                 var stolenPart = advesaryShip.RemoveShipComponent();
                 Pick(stolenPart);
+                foreach(Player player in FindObjectsOfType<Player>())
+                {
+                    if (player.Board == advesaryShip)
+                    {
+                        player.GetOut(advesaryShip);
+                    }
+                }
             }
-            else if( selectedShipPart != null)
+            else if( selectedShipPart != null && !selectedShipPart.IsUsed)
             {
                 Pick(selectedShipPart);
             }
@@ -51,8 +105,10 @@ public class Player : MonoBehaviour
 
             if (ownerShip != null)
             {
-                PickedComponent.Snap(ownerShip);
-                PickedComponent = null;
+                if(PickedComponent.Snap(ownerShip))
+                {
+                    PickedComponent = null;
+                }
                 /*
                 
                 */
@@ -98,5 +154,31 @@ public class Player : MonoBehaviour
             }
         }
         return results;
+    }
+
+    public void OnBoard(Ship ship)
+    {
+        if  (ship.Capacity > 0)
+        {
+            transform.SetParent(ship.transform);
+            Board = ship;
+            transform.position = ship.transform.position;
+            ship.Capacity--;
+        }
+    }
+
+    public void GetOut(Ship ship)
+    {
+        transform.SetParent(null);
+        ship.Capacity++;
+        transform.position -= transform.position.normalized;
+        Board = null;
+    }
+
+    public void ResetPlayer()
+    {
+        transform.SetParent(null);
+        Board = null;
+        PickedComponent = null;
     }
 }

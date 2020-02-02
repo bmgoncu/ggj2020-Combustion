@@ -13,12 +13,10 @@ public class StageManager : MonoBehaviour
         }
     }
 
-    static readonly Vector3 EXTREMES = new Vector3(10f, 0f, 10f);
+    static readonly Vector3 EXTREMES = new Vector3(5f, -6f, 2f);
 
     const float _MIN_DIST_ = 10f;
     const float _STEP_ = 0.05f;
-
-    [SerializeField] GameObject Ship;
 
     [SerializeField] GameObject Engine;
     [SerializeField] GameObject FuelTank;
@@ -34,7 +32,6 @@ public class StageManager : MonoBehaviour
         {
             _players.Add(player.transform.position);
         }
-        PlaceObject(Ship, playerCount);
         PlaceObject(Engine, playerCount);
         PlaceObject(FuelTank, playerCount);
         PlaceObject(Toilet, playerCount);
@@ -48,16 +45,17 @@ public class StageManager : MonoBehaviour
 
     public void PlaceObject(GameObject obj, int count)
     {
+        count += Random.Range(-1, 2);
         for (int i = 0; i < count; i++)
         {
             Vector3 randomPosition;
             float dist = _MIN_DIST_;
             do
             {
-                randomPosition = new Vector3(Random.Range(-EXTREMES.x, EXTREMES.x), 0f, Random.Range(-EXTREMES.z, EXTREMES.z));
+                randomPosition = new Vector3(Random.Range(-EXTREMES.x, EXTREMES.x), 0f, Random.Range(EXTREMES.y, EXTREMES.z));
                 if (Valid(dist, randomPosition))
                 {
-                    _instantiated.Add(Instantiate(obj, randomPosition, Quaternion.identity));
+                    _instantiated.Add(Instantiate(obj, randomPosition, Quaternion.identity, transform));
                 }
                 else
                 {
@@ -86,5 +84,26 @@ public class StageManager : MonoBehaviour
             }
         }
         return true;
+    }
+
+    public void Clean()
+    {
+        for (int i=_instantiated.Count-1; i>=0; i--)
+        {
+            Destroy(_instantiated[i]);
+        }
+
+        _players.Clear();
+        _instantiated.Clear();
+
+        foreach(Ship ship in FindObjectsOfType<Ship>())
+        {
+            ship.ResetShip();
+        }
+
+        foreach (Player player in FindObjectsOfType<Player>())
+        {
+            player.ResetPlayer();
+        }
     }
 }

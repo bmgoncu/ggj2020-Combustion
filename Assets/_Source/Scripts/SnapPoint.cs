@@ -28,7 +28,7 @@ public class SnapPoint : MonoBehaviour
 
             // ve hesaplar...
             //Parent.transform.position = target.transform.position - Offset;
-            /*
+            
             float targetFace = Mathf.Atan2(target.Offset.z, target.Offset.x);
             float myFutureFace = targetFace + Mathf.PI;
             float myCurrentFace = Mathf.Atan2(Offset.z, Offset.x);
@@ -38,11 +38,11 @@ public class SnapPoint : MonoBehaviour
 
             float angle = Quaternion.Angle(futureFaceQuaternion, currentFaceQuaternion);
 
-            Parent.transform.Rotate(0f, angle - target.Parent.transform.eulerAngles.y, 0f);
+            Parent.transform.Rotate(0f, -target.Parent.transform.eulerAngles.y, 0f);
 
             targetFace += target.transform.eulerAngles.y * Mathf.Deg2Rad;
-            Parent.transform.position = target.transform.position + new Vector3(Mathf.Abs(target.Offset.x) * Mathf.Cos(targetFace), 0f, Mathf.Abs(target.Offset.z) * Mathf.Sin(targetFace));
-            */
+            //Parent.transform.position = target.transform.position + new Vector3(Mathf.Abs(target.Offset.x) * Mathf.Cos(targetFace), 0f, Mathf.Abs(target.Offset.z) * Mathf.Sin(targetFace));
+            
             Parent.transform.position = target.transform.position;
         }
     }

@@ -7,6 +7,8 @@ public enum ShipComponentType { ORBITER, FUEL_TANK, ENGINE, CHAIR }
 public class ShipComponent : MonoBehaviour
 {
     public bool IsUsed { get; set; }
+    public float ChancePoint = 0;
+
     /* component'in tipini inspector'dan veriyoruz */
     [SerializeField] ShipComponentType _type;
     SnapPoint[] _snapPoints;    // component'in snap noktaları bu dizide (awake'de alındı)
@@ -23,6 +25,7 @@ public class ShipComponent : MonoBehaviour
         {
             ship.AddShipComponent(this);
             transform.localPosition = Vector3.zero;
+            transform.localRotation = Quaternion.identity;
             IsUsed = true;
             return true;
         }

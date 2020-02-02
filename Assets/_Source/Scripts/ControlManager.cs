@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using NDream.AirConsole;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class ControlManager : MonoBehaviour
 {
@@ -19,7 +19,7 @@ public class ControlManager : MonoBehaviour
 
     [SerializeField] GameObject playerPrefab;
 
-    [SerializeField] Timer timer;
+    [SerializeField] HudUI timer;
 
     public Dictionary<int,Player> PlayersDic { get; private set; }
 
@@ -122,48 +122,58 @@ public class ControlManager : MonoBehaviour
         }
         if ((int)data["action"] == 2)
         {
-            foreach(Ship ship in FindObjectsOfType<Ship>())
+            if (!PlayersDic[from].Board)
             {
-                if (Vector3.Distance(ship.transform.position, PlayersDic[from].transform.position) < 2f)
+                foreach (Ship ship in FindObjectsOfType<Ship>())
                 {
-                    int ftc = 0, orc = 0, enc = 0;
-                    for (int i = 0; i < ship.transform.childCount; i++)
+                    if (Vector3.Distance(ship.transform.position, PlayersDic[from].transform.position) < 2f)
                     {
-                        if (ship.transform.GetChild(i).GetComponent<ShipComponent>().GetShipComponentType() == ShipComponentType.ENGINE)
+                        int ftc = 0, orc = 0, enc = 0;
+                        for (int i = 0; i < ship.transform.childCount; i++)
                         {
-                            enc++;
+                            if (ship.transform.GetChild(i).GetComponent<ShipComponent>().GetShipComponentType() == ShipComponentType.ENGINE)
+                            {
+                                enc++;
+                            }
+                            if (ship.transform.GetChild(i).GetComponent<ShipComponent>().GetShipComponentType() == ShipComponentType.FUEL_TANK)
+                            {
+                                ftc++;
+                            }
+                            if (ship.transform.GetChild(i).GetComponent<ShipComponent>().GetShipComponentType() == ShipComponentType.ORBITER)
+                            {
+                                orc++;
+                            }
                         }
-                        if (ship.transform.GetChild(i).GetComponent<ShipComponent>().GetShipComponentType() == ShipComponentType.FUEL_TANK)
+                        if (enc != 0 && orc != 0 && ftc != 0)
                         {
-                            ftc++;
+                            PlayersDic[from].OnBoard(ship);
                         }
-                        if (ship.transform.GetChild(i).GetComponent<ShipComponent>().GetShipComponentType() == ShipComponentType.ORBITER)
-                        {
-                            orc++;
-                        }
+                        break;
                     }
-                    if (enc != 0 && orc != 0 && ftc != 0)
-                    {
-                        Instance.Escape(from);
-                    }
-                    break;
                 }
+            }
+            else
+            {
+                Escape(PlayersDic[from].Board);
             }
         }
     }
 
     public void StartGame(int playerCount)
     {
-        PlayersDic = new Dictionary<int, Player>();
-        AirConsole.instance.SetActivePlayers(Mathf.Clamp(playerCount, MAX_PLAYER_COUNT, 4));
-        var playerIds = AirConsole.instance.GetActivePlayerDeviceIds;
-        for (int i = 0; i < playerIds.Count; i++)
+        if (PlayersDic == null)
         {
-            PlayersDic[playerIds[i]] = Instantiate(playerPrefab,
-                transform.GetChild(i).position,
-                Quaternion.identity)
-                .GetComponent<Player>();
-            PlayersDic[playerIds[i]].Id = playerIds[i];
+            PlayersDic = new Dictionary<int, Player>();
+            AirConsole.instance.SetActivePlayers(Mathf.Clamp(playerCount, MAX_PLAYER_COUNT, 4));
+            var playerIds = AirConsole.instance.GetActivePlayerDeviceIds;
+            for (int i = 0; i < playerIds.Count; i++)
+            {
+                PlayersDic[playerIds[i]] = Instantiate(playerPrefab,
+                    transform.GetChild(i).position,
+                    Quaternion.identity, StageManager.Instance.transform)
+                    .GetComponent<Player>();
+                PlayersDic[playerIds[i]].Id = playerIds[i];
+            }
         }
         StageManager.Instance.Generate(playerCount);
         foreach(int key in PlayersDic.Keys)
@@ -173,9 +183,16 @@ public class ControlManager : MonoBehaviour
         timer.CountDown(21);
     }
 
-    public void Escape(int id)
+    public void Escape(Ship ship)
     {
-        AirConsole.instance.Message(id, "ESCAPEATTEMPT");
+        foreach(Player player in PlayersDic.Values)
+        {
+            if (player.Board == ship)
+            {
+                AirConsole.instance.Message(player.Id, "ESCAPEATTEMPT");
+            }
+        }
+        ship.transform.DOMove(transform.position + Vector3.up * 10f, 2f);
     }
 
     public void Death()
@@ -185,12 +202,19 @@ public class ControlManager : MonoBehaviour
             AirConsole.instance.Message(key, "END");
         }
 
+        foreach(Player player in PlayersDic.Values)
+        {
+            player.PhysicsRigidBody.velocity = Vector3.zero;
+        }
+
         StartCoroutine(EndScreen());
     }
 
     IEnumerator EndScreen()
     {
-
+        // TEMİZLİK //
+        //...
+        StageManager.Instance.Clean();
         yield return new WaitForSeconds(10f);
         foreach (int key in PlayersDic.Keys)
         {
