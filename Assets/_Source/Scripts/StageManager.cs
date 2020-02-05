@@ -45,7 +45,7 @@ public class StageManager : MonoBehaviour
 
     public void PlaceObject(GameObject[] obj, int count)
     {
-        count += Random.Range(-1, 2);
+        count += Random.Range(0, 2);
         for (int i = 0; i < count; i++)
         {
             Vector3 randomPosition;

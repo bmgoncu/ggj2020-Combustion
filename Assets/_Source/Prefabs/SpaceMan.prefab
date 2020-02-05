@@ -1265,12 +1265,11 @@ SkinnedMeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 760950627647291752, guid: 1e80588eaa2e7424380467eb142de876, type: 3}
-  - {fileID: -5061560729753228348, guid: 1e80588eaa2e7424380467eb142de876, type: 3}
+  - {fileID: 2100000, guid: 1e80588eaa2e7424380467eb142de876, type: 3}
+  - {fileID: 2100002, guid: 1e80588eaa2e7424380467eb142de876, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1278,7 +1277,6 @@ SkinnedMeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -1295,7 +1293,7 @@ SkinnedMeshRenderer:
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
   m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: 42648712861226444, guid: 1e80588eaa2e7424380467eb142de876, type: 3}
+  m_Mesh: {fileID: 4300000, guid: 1e80588eaa2e7424380467eb142de876, type: 3}
   m_Bones:
   - {fileID: 9202263388924172333}
   - {fileID: 8700928359892217821}

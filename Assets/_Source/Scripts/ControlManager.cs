@@ -120,15 +120,12 @@ public class ControlManager : MonoBehaviour
 
         if ((int)data["action"] == 1)
         {
-            PlayersDic[from].DoAction();
-        }
-        if ((int)data["action"] == 2)
-        {
+            bool flag = false;
             if (!PlayersDic[from].Board)
             {
                 foreach (Ship ship in FindObjectsOfType<Ship>())
                 {
-                    if (Vector3.Distance(ship.transform.position, PlayersDic[from].transform.position) < 2f)
+                    if (Vector3.Distance(ship.transform.position, PlayersDic[from].transform.position) < 3f)
                     {
                         int ftc = 0, orc = 0, enc = 0;
                         for (int i = 0; i < ship.transform.childCount; i++)
@@ -149,6 +146,7 @@ public class ControlManager : MonoBehaviour
                         if (enc != 0 && orc != 0 && ftc != 0)
                         {
                             PlayersDic[from].OnBoard(ship);
+                            flag = true;
                         }
                         break;
                     }
@@ -157,6 +155,12 @@ public class ControlManager : MonoBehaviour
             else
             {
                 Escape(PlayersDic[from].Board);
+                flag = true;
+            }
+            Debug.Log(flag);
+            if (!flag)
+            {
+                PlayersDic[from].DoAction();
             }
         }
     }
@@ -230,6 +234,10 @@ public class ControlManager : MonoBehaviour
             player.PhysicsRigidBody.velocity = Vector3.zero;
         }
 
+        foreach (var ship in FindObjectsOfType<Ship>())
+        {
+            ship.StatusUI.gameObject.SetActive(false);
+        }
         StartCoroutine(EndScreen());
     }
 
@@ -263,6 +271,10 @@ public class ControlManager : MonoBehaviour
         yield return new WaitForSeconds(3f);
         foreach (int key in PlayersDic.Keys)
         {
+            foreach (var ship in FindObjectsOfType<Ship>())
+            {
+                ship.StatusUI.gameObject.SetActive(true);
+            }
             PlayersDic[key].transform.position = Vector3.zero;
             AirConsole.instance.Message(key, "RESTART");
         }
