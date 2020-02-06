@@ -105,7 +105,7 @@ GameObject:
   - component: {fileID: 1824111981738884214}
   - component: {fileID: 1275154014964436701}
   m_Layer: 0
-  m_Name: Floor
+  m_Name: Hangar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -214,7 +214,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5139450990001905414}
   m_LocalRotation: {x: -0.7071069, y: -0.0000008419155, z: 0.0000009750428, w: -0.7071067}
-  m_LocalPosition: {x: 0, y: 6.99, z: -5.02}
+  m_LocalPosition: {x: 0, y: 5, z: -5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5302308568720466050}
