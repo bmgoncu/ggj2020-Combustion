@@ -236,7 +236,7 @@ public class ControlManager : MonoBehaviour
 
         foreach (var ship in FindObjectsOfType<Ship>())
         {
-            ship.StatusUI.gameObject.SetActive(false);
+            ship.UpdateStatusUI(false);
         }
         StartCoroutine(EndScreen());
     }
@@ -251,7 +251,7 @@ public class ControlManager : MonoBehaviour
             cinamatic.AppendCallback(() => {
                 foreach (var ship in FindObjectsOfType<Ship>())
                 {
-                    ship.StatusUI.gameObject.SetActive(false);
+                    ship.UpdateStatusUI(false);
                     if (Random.Range(0, 1) > ship.SetTotalChancePoint())
                     {
                         ship.Explode();
@@ -273,7 +273,7 @@ public class ControlManager : MonoBehaviour
         {
             foreach (var ship in FindObjectsOfType<Ship>())
             {
-                ship.StatusUI.gameObject.SetActive(true);
+                ship.UpdateStatusUI(true);
             }
             PlayersDic[key].transform.position = Vector3.zero;
             AirConsole.instance.Message(key, "RESTART");

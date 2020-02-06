@@ -187,14 +187,14 @@ public class Player : MonoBehaviour
             transform.SetParent(ship.transform);
             Board = ship;
             transform.position = ship.transform.position;
-            ship.Capacity--;
+            ship.DecreaseCapacity();
         }
     }
 
     public void GetOut(Ship ship)
     {
         transform.SetParent(null);
-        ship.Capacity++;
+        ship.IncreaseCapacity();
         transform.position -= transform.position.normalized;
         Board = null;
     }

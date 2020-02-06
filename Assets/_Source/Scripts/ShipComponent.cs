@@ -21,7 +21,7 @@ public class ShipComponent : MonoBehaviour
     // her zaman component bir ship'e takılır
     public bool Snap(Ship ship)
     {
-        if (ship.ShipComponents.Count == 0)
+        if (ship.CurrentComponents.Count == 0)
         {
             ship.AddShipComponent(this);
             transform.localPosition = Vector3.up * 0.2f;
@@ -85,7 +85,7 @@ public class ShipComponent : MonoBehaviour
         {
             list[i] = new List<SnapPoint>();            // ... bir liste
 
-            foreach (ShipComponent sc in ship.ShipComponents)      // ship'teki her  component'in...
+            foreach (ShipComponent sc in ship.CurrentComponents)      // ship'teki her  component'in...
             {
                 foreach (SnapPoint sp in sc.GetSnapPoints())            // ... snap point'ini kontrol et
                 {

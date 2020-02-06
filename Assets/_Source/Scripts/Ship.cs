@@ -4,50 +4,73 @@ using UnityEngine;
 
 public class Ship : MonoBehaviour
 {
-    public int OwnerId;
-    public ShipStatus StatusUI;
-    public GameObject ExplosionPrefab;
-    public List<ShipComponent> ShipComponents { get; private set; } = new List<ShipComponent>();
-    public int Capacity;
-    public bool Escaped;
+    /* ui which belongs to the ship */
+    [SerializeField] ShipStatus _statusUI;
+    /* explosion effect */
+    [SerializeField] GameObject _explosionPrefab;
+
+    public bool Escaped { get; private set; } = false;  /* true if the ship escaped */
+
+    /* we assumed that a ship may contain more than 1 person */
+    public int Capacity { get; private set; } = 0;
+    /* actrually capacity is the number of orbiters attached */
+
+    /* list of attached components */
+    public List<ShipComponent> CurrentComponents { get; private set; } = new List<ShipComponent>();
 
     public void AddShipComponent(ShipComponent sc)
     {
-        ShipComponents.Add(sc);
+        CurrentComponents.Add(sc);
         sc.transform.SetParent(transform);
         if (sc.GetShipComponentType() == ShipComponentType.ORBITER)
+        {
             Capacity++;
+        }
         SetTotalChancePoint();
     }
 
     public ShipComponent RemoveShipComponent()
     {
-        if (ShipComponents.Count == 0) return null;
+        if (CurrentComponents.Count == 0)
+        {
+            return null;
+        }
+
+        int removeIndex = Random.Range(0, CurrentComponents.Count);
+        ShipComponent removedPart = CurrentComponents[removeIndex];
+
+        CurrentComponents.RemoveAt(removeIndex);
+        removedPart.transform.SetParent(null);
+
         SetTotalChancePoint();
-        var removeIndex = UnityEngine.Random.Range(0, ShipComponents.Count);
-        var removedPart = ShipComponents[removeIndex];
-        ShipComponents.RemoveAt(removeIndex);
-        removedPart.transform.SetParent(transform);
+
         return removedPart;
     }
 
     public float SetTotalChancePoint()
     {
-        var point = ShipComponents.Sum(sc => sc.ChancePoint);
-        StatusUI.SetValue(point);
+        float point = CurrentComponents.Sum(sc => sc.ChancePoint);
+        _statusUI.SetValue(point);
         return point;
     }
 
     public void ResetShip()
     {
-        StatusUI.SetValue(0.05f);
-        ShipComponents.Clear();
-        Capacity = 0;
+        /* 5% is to represent an empty status bar */
+        _statusUI.SetValue(0.05f);
+
         Escaped = false;
+        Capacity = 0;
+        CurrentComponents.Clear();
     }
 
-    public void Explode()
-    {
-        Instantiate(ExplosionPrefab, transform);
-    }
+    /* following function will be updated after the implementation of the pooling manager */
+    public void Explode() { Instantiate(_explosionPrefab, transform); }
+
+    public void IncreaseCapacity() { Capacity++; }
+
+    public void DecreaseCapacity() { Capacity--; }
+
+    /* shows or hides the status ui attached to this ship */
+    public void UpdateStatusUI(bool enabled) { _statusUI.gameObject.SetActive(enabled); }
 }

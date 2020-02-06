@@ -483,6 +483,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1448427722305207190, guid: 9e60f38deb8c0454b8b2f408db8b0244,
         type: 3}
+    - target: {fileID: 3633304357289200747, guid: e7dd25e19b63e4c16a3a028601cffb50,
+        type: 3}
+      propertyPath: _statusUI
+      value: 
+      objectReference: {fileID: 852078767}
+    - target: {fileID: 3633304357289200747, guid: e7dd25e19b63e4c16a3a028601cffb50,
+        type: 3}
+      propertyPath: _explosionPrefab
+      value: 
+      objectReference: {fileID: 2654304416512018911, guid: 32478ab8df17138419142ec129e3b29f,
+        type: 3}
     - target: {fileID: 3710167484088888871, guid: e7dd25e19b63e4c16a3a028601cffb50,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1392,6 +1403,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1448427722305207190, guid: 9e60f38deb8c0454b8b2f408db8b0244,
         type: 3}
+    - target: {fileID: 3633304357289200747, guid: e7dd25e19b63e4c16a3a028601cffb50,
+        type: 3}
+      propertyPath: _statusUI
+      value: 
+      objectReference: {fileID: 1131170518}
+    - target: {fileID: 3633304357289200747, guid: e7dd25e19b63e4c16a3a028601cffb50,
+        type: 3}
+      propertyPath: _explosionPrefab
+      value: 
+      objectReference: {fileID: 2654304416512018911, guid: 32478ab8df17138419142ec129e3b29f,
+        type: 3}
     - target: {fileID: 3710167484088888871, guid: e7dd25e19b63e4c16a3a028601cffb50,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1790,6 +1812,17 @@ PrefabInstance:
       propertyPath: ExplosionPrefab
       value: 
       objectReference: {fileID: 1448427722305207190, guid: 9e60f38deb8c0454b8b2f408db8b0244,
+        type: 3}
+    - target: {fileID: 3633304357289200747, guid: e7dd25e19b63e4c16a3a028601cffb50,
+        type: 3}
+      propertyPath: _statusUI
+      value: 
+      objectReference: {fileID: 681341738}
+    - target: {fileID: 3633304357289200747, guid: e7dd25e19b63e4c16a3a028601cffb50,
+        type: 3}
+      propertyPath: _explosionPrefab
+      value: 
+      objectReference: {fileID: 2654304416512018911, guid: 32478ab8df17138419142ec129e3b29f,
         type: 3}
     - target: {fileID: 3710167484088888871, guid: e7dd25e19b63e4c16a3a028601cffb50,
         type: 3}
@@ -2482,6 +2515,17 @@ PrefabInstance:
       propertyPath: ExplosionPrefab
       value: 
       objectReference: {fileID: 1448427722305207190, guid: 9e60f38deb8c0454b8b2f408db8b0244,
+        type: 3}
+    - target: {fileID: 3633304357289200747, guid: e7dd25e19b63e4c16a3a028601cffb50,
+        type: 3}
+      propertyPath: _statusUI
+      value: 
+      objectReference: {fileID: 1502362800}
+    - target: {fileID: 3633304357289200747, guid: e7dd25e19b63e4c16a3a028601cffb50,
+        type: 3}
+      propertyPath: _explosionPrefab
+      value: 
+      objectReference: {fileID: 2654304416512018911, guid: 32478ab8df17138419142ec129e3b29f,
         type: 3}
     - target: {fileID: 3710167484088888871, guid: e7dd25e19b63e4c16a3a028601cffb50,
         type: 3}
