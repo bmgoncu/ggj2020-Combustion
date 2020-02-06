@@ -70,8 +70,8 @@ public class Player : MonoBehaviour
 
         float angle = Mathf.PI / 2f - Mathf.Atan2(vec.y, vec.x);
         transform.rotation = Quaternion.Euler(0f, angle * Mathf.Rad2Deg, 0f);
-        
-        if  (vec.Equals(Vector2.zero))
+
+        if (vec.Equals(Vector2.zero))
         {
             _animator.SetInteger("Param", PickedComponent == null ? 0 : 10);
         }
@@ -92,7 +92,7 @@ public class Player : MonoBehaviour
             // Get advesary ships
             var availableShips = GetObjectInRange<Ship>(SHIP_DISTANCE, (s) => s.Escaped == false/*s.OwnerId != Id*/);
             var advesaryShip = (availableShips.Count > 0) ? availableShips[0] : null;
-            var availableShipParts  = GetObjectInRange<ShipComponent>(INTERACTION_DIST, (sc) => !sc.IsUsed);
+            var availableShipParts = GetObjectInRange<ShipComponent>(INTERACTION_DIST, (sc) => !sc.IsUsed);
             var selectedShipPart = (availableShipParts.Count > 0) ? availableShipParts[UnityEngine.Random.Range(0, availableShipParts.Count)] : null;
 
             bool shipiscloser = true;
@@ -105,7 +105,7 @@ public class Player : MonoBehaviour
             {
                 var stolenPart = advesaryShip.RemoveShipComponent();
                 Pick(stolenPart);
-                foreach(Player player in FindObjectsOfType<Player>())
+                foreach (Player player in FindObjectsOfType<Player>())
                 {
                     if (player.Board == advesaryShip)
                     {
@@ -113,7 +113,7 @@ public class Player : MonoBehaviour
                     }
                 }
             }
-            else if( selectedShipPart != null && !selectedShipPart.IsUsed)
+            else if (selectedShipPart != null && !selectedShipPart.IsUsed)
             {
                 Pick(selectedShipPart);
             }
@@ -126,7 +126,7 @@ public class Player : MonoBehaviour
 
             if (ownerShip != null)
             {
-                if(PickedComponent.Snap(ownerShip))
+                if (PickedComponent.Attach(ownerShip))
                 {
                     PickedComponent = null;
                 }
@@ -143,29 +143,35 @@ public class Player : MonoBehaviour
 
     public bool Pick(ShipComponent component)
     {
-        if (PickedComponent != null) return false;
+        if (PickedComponent != null)
+        {
+            return false;
+        }
+
         PickedComponent = component;
-        component.transform.SetParent(Hand);
-        component.transform.localPosition = Vector3.zero;
-        component.transform.localEulerAngles = Vector3.zero;
-        //component.transform.localPosition = transform.GetChild(0).localPosition;
-        component.IsUsed = true;
+
+        component.Pick(Hand);
+
         return true;
     }
 
     public ShipComponent Drop()
     {
-        var comp = PickedComponent;
-        if (comp == null) return null;
-        comp.transform.SetParent(null);
+        ShipComponent comp = PickedComponent;
+
+        if (comp == null)
+        {
+            return null;
+        }
+
+        comp.Drop();
+
         PickedComponent = null;
-        comp.IsUsed = false;
-        comp.transform.position = new Vector3(comp.transform.position.x, 0.2f, comp.transform.position.z);
-        comp.transform.localEulerAngles = Vector3.zero;
+
         return comp;
     }
 
-    private List<T> GetObjectInRange<T>(float range, Func<T,bool> condition) where T : MonoBehaviour
+    private List<T> GetObjectInRange<T>(float range, Func<T, bool> condition) where T : MonoBehaviour
     {
         var emptyComponents = FindObjectsOfType<T>();
         List<T> results = new List<T>();
@@ -182,7 +188,7 @@ public class Player : MonoBehaviour
 
     public void OnBoard(Ship ship)
     {
-        if  (ship.Capacity > 0)
+        if (ship.Capacity > 0)
         {
             transform.SetParent(ship.transform);
             Board = ship;

@@ -26,20 +26,21 @@ public class SnapPoint : MonoBehaviour
         {
             target.Snap(this, false);
 
-            _parent.SetParent(target.transform);
+            //_parent.SetParent(target.transform);
 
-            _parent.localScale = Vector3.one;
-            _parent.localPosition = Vector3.zero;
+            _parent.position = target.transform.position - transform.localPosition;
+            _parent.eulerAngles = target.transform.eulerAngles;
+            //_parent.localScale = Vector3.one;
         }
     }
 
     /* same logic with the Snap function */
     public void Unsnap(bool changeParent)
     {
-        if (changeParent)
+        if (changeParent && Snapped)
         {
             Snapped.Unsnap(false);
-            _parent.SetParent(null);
+            //_parent.SetParent(null);
         }
 
         Snapped = null;

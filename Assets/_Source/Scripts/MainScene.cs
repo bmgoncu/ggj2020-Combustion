@@ -18,22 +18,22 @@ public class MainScene : MonoBehaviour
     {
         if (Input.GetKeyUp(KeyCode.R))
         {
-            Components[0].Snap(Ship);
+            Components[0].Attach(Ship);
         }
         if (Input.GetKeyUp(KeyCode.T))
         {
-            Components[1].Snap(Ship);
+            Components[1].Attach(Ship);
         }
 
         if (Input.GetKeyUp(KeyCode.E))
         {
-            Components[2].Snap(Ship);
+            Components[2].Attach(Ship);
         }
 
 
         if (Input.GetKeyUp(KeyCode.Q))
         {
-            Components[3].Snap(Ship);
+            Components[3].Attach(Ship);
         }
         if (Input.GetKeyUp(KeyCode.Space))
         {

@@ -130,15 +130,15 @@ public class ControlManager : MonoBehaviour
                         int ftc = 0, orc = 0, enc = 0;
                         for (int i = 0; i < ship.transform.childCount; i++)
                         {
-                            if (ship.transform.GetChild(i).GetComponent<ShipComponent>().GetShipComponentType() == ShipComponentType.ENGINE)
+                            if (ship.transform.GetChild(i).GetComponent<ShipComponent>().Type == ShipComponentType.ENGINE)
                             {
                                 enc++;
                             }
-                            if (ship.transform.GetChild(i).GetComponent<ShipComponent>().GetShipComponentType() == ShipComponentType.FUEL_TANK)
+                            if (ship.transform.GetChild(i).GetComponent<ShipComponent>().Type == ShipComponentType.FUEL_TANK)
                             {
                                 ftc++;
                             }
-                            if (ship.transform.GetChild(i).GetComponent<ShipComponent>().GetShipComponentType() == ShipComponentType.ORBITER)
+                            if (ship.transform.GetChild(i).GetComponent<ShipComponent>().Type == ShipComponentType.ORBITER)
                             {
                                 orc++;
                             }
@@ -187,7 +187,7 @@ public class ControlManager : MonoBehaviour
         {
             AirConsole.instance.Message(key, "STARTING");
         }
-        timer.CountDown(21);
+        timer.CountDown(41);
     }
 
     private Color GetColorForIndex(int i)

@@ -1,95 +1,111 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-/* 3 tip component  var */
-public enum ShipComponentType { ORBITER, FUEL_TANK, ENGINE, CHAIR }
+/* there are three types of components */
+public enum ShipComponentType { ORBITER, FUEL_TANK, ENGINE }
 
 public class ShipComponent : MonoBehaviour
 {
-    public bool IsUsed { get; set; }
-    public float ChancePoint = 0;
+    [SerializeField] float _chancePoint;
 
-    /* component'in tipini inspector'dan veriyoruz */
     [SerializeField] ShipComponentType _type;
-    SnapPoint[] _snapPoints;    // component'in snap noktaları bu dizide (awake'de alındı)
+
+    public bool IsUsed { get; private set; }
+
+    public float ChancePoint { get { return _chancePoint; } }
+
+    public ShipComponentType Type { get { return _type; } }
+
+    public SnapPoint[] SnapPoints { get; private set; }
 
     void Awake()
     {
-        _snapPoints = GetComponentsInChildren<SnapPoint>();
+        SnapPoints = GetComponentsInChildren<SnapPoint>();
     }
 
-    // her zaman component bir ship'e takılır
-    public bool Snap(Ship ship)
+    /* components are always attached to a ship */
+    public bool Attach(Ship ship)
     {
+        /* when this component is the first component attaced to the ship */
         if (ship.CurrentComponents.Count == 0)
         {
+            IsUsed = true;
             ship.AddShipComponent(this);
+
             transform.localPosition = Vector3.up * 0.2f;
             transform.localRotation = Quaternion.identity;
-            IsUsed = true;
+
             return true;
         }
 
-        /* burası çokomelli */
-        /* ship üzerinde benim snap point'lerimi kabul eden snap point'ler listesi */
         List<SnapPoint>[] accepted = GetAcceptedSnapPoints(ship);
 
-        /* EKLENECEK YER YOKSA COUNTER = 1 ve RETURN FALSE */
         int counter = 0;
         foreach(List<SnapPoint> element in accepted)
         {
             counter += element.Count;
         }
+
         if (counter == 0)
         {
             return false;
         }
 
-        /* aşağısı problem çıkarır mı / bence çıkarmaz ama konuşalım */
         int index;
         do
         {
-            index = Random.Range(0, _snapPoints.Length);
-            if (accepted[index].Count == 0)
-            {
-                index = -1;
-            }
+            index = Random.Range(0, SnapPoints.Length);
         }
-        while (index == -1);
+        while (accepted[index].Count == 0);
 
         if (index != -1)
         {
             ship.AddShipComponent(this);
 
-            SnapPoint selected = accepted[index][Random.Range(0, accepted[index].Count)];
-            /* bizim snap point'imize selected'ı ekliyoruz ki Snap fonksiyonu aynı zamanda pozisyon ve rotasyon hesabını da yapsın */
-            _snapPoints[index].Snap(selected, true);
+            SnapPoints[index].Snap(accepted[index][Random.Range(0, accepted[index].Count)], true);
+
             IsUsed = true;
+
             return true;
         }
 
         return false;
     }
 
-    public SnapPoint[] GetSnapPoints() { return _snapPoints; }
+    public void Pick(Transform hand)
+    {
+        IsUsed = true;
 
-    public ShipComponentType GetShipComponentType() { return _type; }
+        transform.SetParent(hand);
+        transform.localPosition = Vector3.zero;
+        transform.localEulerAngles = Vector3.zero;
+    }
 
-    #region IN-CLASS METHODS
+    public void Drop()
+    {
+        IsUsed = false;
+
+        Vector3 pos = transform.position;
+        pos.y = 0.2f;
+
+        transform.SetParent(null);
+        transform.position = pos;
+        transform.localEulerAngles = Vector3.zero;
+    }
 
     List<SnapPoint>[] GetAcceptedSnapPoints(Ship ship)
     {
-        List<SnapPoint>[] list = new List<SnapPoint>[_snapPoints.Length];
+        List<SnapPoint>[] list = new List<SnapPoint>[SnapPoints.Length];
 
-        for (int i = 0; i < _snapPoints.Length; i++)    // her bir snap point'ime ...
+        for (int i = 0; i < SnapPoints.Length; i++)
         {
-            list[i] = new List<SnapPoint>();            // ... bir liste
+            list[i] = new List<SnapPoint>();
 
-            foreach (ShipComponent sc in ship.CurrentComponents)      // ship'teki her  component'in...
+            foreach (ShipComponent sc in ship.CurrentComponents)
             {
-                foreach (SnapPoint sp in sc.GetSnapPoints())            // ... snap point'ini kontrol et
+                foreach (SnapPoint sp in sc.SnapPoints)
                 {
-                    if (sp.IsAvailable(_type) && _snapPoints[i].IsAvailable(sc.GetShipComponentType()))
+                    if (sp.IsAvailable(_type) && SnapPoints[i].IsAvailable(sc.Type))
                     {
                         list[i].Add(sp);
                     }
@@ -99,6 +115,4 @@ public class ShipComponent : MonoBehaviour
 
         return list;
     }
-
-    #endregion
 }

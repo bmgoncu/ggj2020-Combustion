@@ -22,7 +22,7 @@ public class Ship : MonoBehaviour
     {
         CurrentComponents.Add(sc);
         sc.transform.SetParent(transform);
-        if (sc.GetShipComponentType() == ShipComponentType.ORBITER)
+        if (sc.Type == ShipComponentType.ORBITER)
         {
             Capacity++;
         }
@@ -41,6 +41,11 @@ public class Ship : MonoBehaviour
 
         CurrentComponents.RemoveAt(removeIndex);
         removedPart.transform.SetParent(null);
+
+        foreach(SnapPoint sp in removedPart.SnapPoints)
+        {
+            sp.Unsnap(true);
+        }
 
         SetTotalChancePoint();
 
