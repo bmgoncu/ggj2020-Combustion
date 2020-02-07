@@ -18,10 +18,10 @@ public class Ship : MonoBehaviour
     /* list of attached components */
     public List<ShipComponent> CurrentComponents { get; private set; } = new List<ShipComponent>();
 
+    /* this method is called by the ship component sc */
     public void AddShipComponent(ShipComponent sc)
     {
         CurrentComponents.Add(sc);
-        sc.transform.SetParent(transform);
         if (sc.Type == ShipComponentType.ORBITER)
         {
             Capacity++;
@@ -29,6 +29,7 @@ public class Ship : MonoBehaviour
         SetTotalChancePoint();
     }
 
+    /* sometimes, we remove a random ShipComponent from the ship, if there's one */
     public ShipComponent RemoveShipComponent()
     {
         if (CurrentComponents.Count == 0)
@@ -40,12 +41,6 @@ public class Ship : MonoBehaviour
         ShipComponent removedPart = CurrentComponents[removeIndex];
 
         CurrentComponents.RemoveAt(removeIndex);
-        removedPart.transform.SetParent(null);
-
-        foreach(SnapPoint sp in removedPart.SnapPoints)
-        {
-            sp.Unsnap(true);
-        }
 
         SetTotalChancePoint();
 

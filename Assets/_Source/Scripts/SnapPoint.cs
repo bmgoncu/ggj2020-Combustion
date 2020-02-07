@@ -10,10 +10,24 @@ public class SnapPoint : MonoBehaviour
 
     Transform _parent;
 
+    Vector3 _offset;
+
     void Awake()
     {
         /* the parent at the top always have a ShipComponent script */
         _parent = GetComponentInParent<ShipComponent>().transform;
+
+        _offset = transform.localPosition;
+
+        /* offset with respect to the top parent */
+        Transform traverse = transform.parent;
+        while (traverse != _parent)
+        {
+            _offset += traverse.localPosition;
+            traverse = traverse.parent;
+        }
+
+        _offset *= 3f;
     }
 
     /* if you send false as the second parameter, it only assigns Snapped value */
@@ -26,11 +40,10 @@ public class SnapPoint : MonoBehaviour
         {
             target.Snap(this, false);
 
-            //_parent.SetParent(target.transform);
+            Debug.Log("OFFSET : " + _offset);
 
-            _parent.position = target.transform.position - transform.localPosition;
+            _parent.position = target.transform.position - _offset;
             _parent.eulerAngles = target.transform.eulerAngles;
-            //_parent.localScale = Vector3.one;
         }
     }
 
@@ -40,7 +53,6 @@ public class SnapPoint : MonoBehaviour
         if (changeParent && Snapped)
         {
             Snapped.Unsnap(false);
-            //_parent.SetParent(null);
         }
 
         Snapped = null;

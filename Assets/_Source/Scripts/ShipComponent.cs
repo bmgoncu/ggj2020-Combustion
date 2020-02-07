@@ -26,17 +26,21 @@ public class ShipComponent : MonoBehaviour
     /* components are always attached to a ship */
     public bool Attach(Ship ship)
     {
-        /* when this component is the first component attaced to the ship */
+        /* when this component is the first component attached to the ship */
         if (ship.CurrentComponents.Count == 0)
         {
             IsUsed = true;
+
             ship.AddShipComponent(this);
 
+            transform.SetParent(ship.transform);
             transform.localPosition = Vector3.up * 0.2f;
             transform.localRotation = Quaternion.identity;
 
             return true;
         }
+
+        /* after this point, we're looking for an available snap point */
 
         List<SnapPoint>[] accepted = GetAcceptedSnapPoints(ship);
 
@@ -60,11 +64,13 @@ public class ShipComponent : MonoBehaviour
 
         if (index != -1)
         {
+            IsUsed = true;
+
             ship.AddShipComponent(this);
 
-            SnapPoints[index].Snap(accepted[index][Random.Range(0, accepted[index].Count)], true);
+            transform.SetParent(ship.transform);
 
-            IsUsed = true;
+            SnapPoints[index].Snap(accepted[index][Random.Range(0, accepted[index].Count)], true);
 
             return true;
         }
@@ -74,6 +80,11 @@ public class ShipComponent : MonoBehaviour
 
     public void Pick(Transform hand)
     {
+        foreach (SnapPoint sp in SnapPoints)
+        {
+            sp.Unsnap(true);
+        }
+
         IsUsed = true;
 
         transform.SetParent(hand);
