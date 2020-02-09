@@ -37,7 +37,7 @@ public class MainScene : MonoBehaviour
         }
         if (Input.GetKeyUp(KeyCode.Space))
         {
-            FindObjectOfType<ControlManager>().StartGame(AirConsole.instance.GetControllerDeviceIds().Count);
+//            FindObjectOfType<ControlManager>().StartGame(AirConsole.instance.GetControllerDeviceIds().Count);
         }
     }
 }

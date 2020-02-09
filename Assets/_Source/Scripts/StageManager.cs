@@ -19,6 +19,28 @@ public class StageManager : SingletonComponent<StageManager>
 
     List<Vector3> _players = new List<Vector3>();
 
+    public Player CreatePlayer(int playerId, int index)
+    {
+        Player player = Instantiate(
+            PlayerPrefab,
+            transform.GetChild(index).position,
+            transform.GetChild(index).rotation,
+            transform
+        ).GetComponent<Player>();
+
+        player.Id = playerId;
+        player.Index = index;
+        player.SetColor(GetColorForIndex(index));
+
+        return player;
+    }
+
+    public void ResetPlayerTransform(Player player)
+    {
+        player.transform.position = transform.GetChild(player.Index).position;
+        player.transform.rotation = transform.GetChild(player.Index).rotation;
+    }
+
     public void CreatePlayers(List<int> playerIds)
     {
         PlayersDic = new Dictionary<int, Player>();

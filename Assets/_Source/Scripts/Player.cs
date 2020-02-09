@@ -7,9 +7,12 @@ public class Player : MonoBehaviour
     public Ship Board;
 
     public int Id;
+    public int Index;
     public ShipComponent PickedComponent;
     public Rigidbody PhysicsRigidBody;
     public SkinnedMeshRenderer Renderer;
+
+    public Color color;
 
     public Transform Hand;
 
@@ -17,7 +20,7 @@ public class Player : MonoBehaviour
 
     private const int INTERACTION_DIST = 1;
     private const float SHIP_DISTANCE = 3f;
-    private const float VELOCITY_MULTIPLIER = 3;
+    private const float VELOCITY_MULTIPLIER = 5;
 
     // Start is called before the first frame update
     void Start()
@@ -26,9 +29,10 @@ public class Player : MonoBehaviour
         _animator = GetComponent<Animator>();
     }
 
-    public void SetColor(Color color)
+    public void SetColor(Color c)
     {
-        Renderer.materials[1].color = color;
+        color = c;
+        Renderer.materials[1].color = c;
     }
 
     void Update()
