@@ -470,7 +470,7 @@ PrefabInstance:
     - target: {fileID: 346825968699449348, guid: e7dd25e19b63e4c16a3a028601cffb50,
         type: 3}
       propertyPath: m_Name
-      value: Ship
+      value: Ship1
       objectReference: {fileID: 0}
     - target: {fileID: 3633304357289200747, guid: e7dd25e19b63e4c16a3a028601cffb50,
         type: 3}
@@ -551,6 +551,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e7dd25e19b63e4c16a3a028601cffb50, type: 3}
+--- !u!114 &196483679 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3633304357289200747, guid: e7dd25e19b63e4c16a3a028601cffb50,
+    type: 3}
+  m_PrefabInstance: {fileID: 196483678}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b03b3f55611f5472daeff866ffbcae5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &199654255
 GameObject:
   m_ObjectHideFlags: 0
@@ -1212,17 +1224,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9725ce6aea61245fdbf413119f93f5c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SceneShips:
+  - {fileID: 196483679}
+  - {fileID: 1094680409}
+  - {fileID: 1316307880}
+  - {fileID: 1746291192}
+  PlayerPrefab: {fileID: 2592358098132998745, guid: ec30447adfab74a0bb6eb03fe79aa5ec,
+    type: 3}
   Engine:
   - {fileID: 1412568820911162064, guid: c5048c4b2ccc14cefa037f4891b070bf, type: 3}
   - {fileID: 5396896591490058092, guid: 3cf193a18bd18417b8105226c96b5838, type: 3}
   - {fileID: 1818342590184151069, guid: e551ae8f055714aceace70f03508f9da, type: 3}
-  FuelTank:
-  - {fileID: 4444790510434282673, guid: f9e8008afbd464774a5cea7e44f5315d, type: 3}
-  - {fileID: 6435615003359262397, guid: 811df84a37e2247ec8dbd8d9d492b30f, type: 3}
   Toilet:
   - {fileID: 8233218252298840245, guid: 075d5178c793748a3aafca7af5df5634, type: 3}
   - {fileID: 5509796867567625553, guid: 8168e409d3bc948c19255faa0f3e310e, type: 3}
   - {fileID: 318375584508842418, guid: 633b60129114449fea374421dee89557, type: 3}
+  FuelTank:
+  - {fileID: 4444790510434282673, guid: f9e8008afbd464774a5cea7e44f5315d, type: 3}
+  - {fileID: 6435615003359262397, guid: 811df84a37e2247ec8dbd8d9d492b30f, type: 3}
 --- !u!1 &957984706
 GameObject:
   m_ObjectHideFlags: 0
@@ -1390,7 +1409,7 @@ PrefabInstance:
     - target: {fileID: 346825968699449348, guid: e7dd25e19b63e4c16a3a028601cffb50,
         type: 3}
       propertyPath: m_Name
-      value: Ship
+      value: Ship2
       objectReference: {fileID: 0}
     - target: {fileID: 3633304357289200747, guid: e7dd25e19b63e4c16a3a028601cffb50,
         type: 3}
@@ -1471,6 +1490,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e7dd25e19b63e4c16a3a028601cffb50, type: 3}
+--- !u!114 &1094680409 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3633304357289200747, guid: e7dd25e19b63e4c16a3a028601cffb50,
+    type: 3}
+  m_PrefabInstance: {fileID: 1094680408}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b03b3f55611f5472daeff866ffbcae5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1131170516
 GameObject:
   m_ObjectHideFlags: 0
@@ -1800,7 +1831,7 @@ PrefabInstance:
     - target: {fileID: 346825968699449348, guid: e7dd25e19b63e4c16a3a028601cffb50,
         type: 3}
       propertyPath: m_Name
-      value: Ship
+      value: Ship3
       objectReference: {fileID: 0}
     - target: {fileID: 3633304357289200747, guid: e7dd25e19b63e4c16a3a028601cffb50,
         type: 3}
@@ -1881,6 +1912,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e7dd25e19b63e4c16a3a028601cffb50, type: 3}
+--- !u!114 &1316307880 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3633304357289200747, guid: e7dd25e19b63e4c16a3a028601cffb50,
+    type: 3}
+  m_PrefabInstance: {fileID: 1316307879}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b03b3f55611f5472daeff866ffbcae5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1364984097
 GameObject:
   m_ObjectHideFlags: 0
@@ -2498,7 +2541,7 @@ PrefabInstance:
     - target: {fileID: 346825968699449348, guid: e7dd25e19b63e4c16a3a028601cffb50,
         type: 3}
       propertyPath: m_Name
-      value: Ship
+      value: Ship4
       objectReference: {fileID: 0}
     - target: {fileID: 3633304357289200747, guid: e7dd25e19b63e4c16a3a028601cffb50,
         type: 3}
@@ -2584,6 +2627,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e7dd25e19b63e4c16a3a028601cffb50, type: 3}
+--- !u!114 &1746291192 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3633304357289200747, guid: e7dd25e19b63e4c16a3a028601cffb50,
+    type: 3}
+  m_PrefabInstance: {fileID: 1746291191}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b03b3f55611f5472daeff866ffbcae5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1763596201
 GameObject:
   m_ObjectHideFlags: 0

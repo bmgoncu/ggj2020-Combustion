@@ -2,33 +2,40 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StageManager : MonoBehaviour
+public class StageManager : SingletonComponent<StageManager>
 {
-    static StageManager _instance;
-    public static StageManager Instance
-    {
-        get
-        {
-            return _instance ? _instance : _instance = FindObjectOfType<StageManager>();
-        }
-    }
+    public List<Ship> SceneShips;
+    public GameObject PlayerPrefab;
+    public GameObject[] Engine;
+    public GameObject[] Toilet;
+    public GameObject[] FuelTank;
+    public Dictionary<int,Player> PlayersDic { get; private set; }
+    private readonly Vector3 EXTREMES = new Vector3(5f, -6f, 2f);
 
-    static readonly Vector3 EXTREMES = new Vector3(5f, -6f, 2f);
-
-    const float _MIN_DIST_ = 10f;
-    const float _STEP_ = 0.05f;
-
-    [SerializeField] GameObject[] Engine;
-    [SerializeField] GameObject[] FuelTank;
-    [SerializeField] GameObject[] Toilet;
+    private const float _MIN_DIST_ = 10f;
+    private const float _STEP_ = 0.05f;
 
     readonly List<GameObject> _instantiated = new List<GameObject>();
 
     List<Vector3> _players = new List<Vector3>();
 
+    public void CreatePlayers(List<int> playerIds)
+    {
+        PlayersDic = new Dictionary<int, Player>();
+        for (int i = 0; i < playerIds.Count; i++)
+        {
+            PlayersDic[playerIds[i]] = Instantiate(PlayerPrefab,
+                    transform.GetChild(i).position,
+                    Quaternion.identity, transform)
+                .GetComponent<Player>();
+            PlayersDic[playerIds[i]].Id = playerIds[i];
+            PlayersDic[playerIds[i]].SetColor(GetColorForIndex(i));
+        }
+    }
+
     public void Generate(int playerCount)
     {
-        foreach (Player player in FindObjectsOfType<Player>())
+        foreach (Player player in PlayersDic.Values)
         {
             _players.Add(player.transform.position);
         }
@@ -38,7 +45,7 @@ public class StageManager : MonoBehaviour
 
         /*
         int counter = 0;
-        foreach (Ship ship in FindObjectsOfType<Ship>())
+        foreach (Ship ship in ControlManager.Instance.PlayersDic.Values)
         {
             ship.OwnerId = ++counter;
         }
@@ -87,6 +94,23 @@ public class StageManager : MonoBehaviour
         }
         return true;
     }
+    
+    private Color GetColorForIndex(int i)
+    {
+        switch (i)
+        {
+            case 0:
+                return Color.red;
+            case 1:
+                return Color.green;
+            case 2:
+                return Color.blue;
+            case 3:
+                return Color.magenta;
+            default:
+                return Color.black;
+        }
+    }
 
     public void Clean()
     {
@@ -98,12 +122,12 @@ public class StageManager : MonoBehaviour
         _players.Clear();
         _instantiated.Clear();
 
-        foreach(Ship ship in FindObjectsOfType<Ship>())
+        foreach(Ship ship in SceneShips)
         {
             ship.ResetShip();
         }
 
-        foreach (Player player in FindObjectsOfType<Player>())
+        foreach (Player player in PlayersDic.Values)
         {
             player.ResetPlayer();
         }

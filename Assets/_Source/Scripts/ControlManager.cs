@@ -1,35 +1,24 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
 using NDream.AirConsole;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
 
-public class ControlManager : MonoBehaviour
+public class ControlManager : SingletonComponent<ControlManager>
 {
-    static ControlManager _instance;
 
-    public static ControlManager Instance
-    {
-        get
-        {
-            return _instance ? _instance : _instance = FindObjectOfType<ControlManager>();
-        }
-    }
-
-    static int success = 0;
-
-    [SerializeField] GameObject playerPrefab;
-
-    [SerializeField] HudUI timer;
-
-    public Dictionary<int,Player> PlayersDic { get; private set; }
-
-    private const int MAX_PLAYER_COUNT = 2;
-
-    int playerCounter = 0;
-
+    public GameObject playerPrefab;
+    public HudUI timer;
     public string[] colors= {"red", "green", "blue", "purple"};
+
+
+    private static int success = 0;
+    private const int MAX_PLAYER_COUNT = 2;
+    private int playerCounter = 0;
+
+
 
     void Awake()
     {
@@ -106,7 +95,7 @@ public class ControlManager : MonoBehaviour
         }
         int active_player = AirConsole.instance.ConvertDeviceIdToPlayerNumber(from);
 
-        if  (active_player == -1 || PlayersDic == null || !PlayersDic.ContainsKey(from))
+        if  (active_player == -1 || StageManager.Instance.PlayersDic == null || !StageManager.Instance.PlayersDic.ContainsKey(from))
         {
             return;
         }
@@ -116,16 +105,16 @@ public class ControlManager : MonoBehaviour
             return;
         }
 
-        PlayersDic[from].Move(2f*new Vector2((float)data["x"], (float)data["y"]));
+        StageManager.Instance.PlayersDic[from].Move(2f*new Vector2((float)data["x"], (float)data["y"]));
 
         if ((int)data["action"] == 1)
         {
             bool flag = false;
-            if (!PlayersDic[from].Board)
+            if (!StageManager.Instance.PlayersDic[from].Board)
             {
-                foreach (Ship ship in FindObjectsOfType<Ship>())
+                foreach (Ship ship in StageManager.Instance.SceneShips)
                 {
-                    if (Vector3.Distance(ship.transform.position, PlayersDic[from].transform.position) < 3f)
+                    if (Vector3.Distance(ship.transform.position, StageManager.Instance.PlayersDic[from].transform.position) < 3f)
                     {
                         int ftc = 0, orc = 0, enc = 0;
                         for (int i = 0; i < ship.transform.childCount; i++)
@@ -145,7 +134,7 @@ public class ControlManager : MonoBehaviour
                         }
                         if (enc != 0 && orc != 0 && ftc != 0)
                         {
-                            PlayersDic[from].OnBoard(ship);
+                            StageManager.Instance.PlayersDic[from].OnBoard(ship);
                             flag = true;
                         }
                         break;
@@ -154,62 +143,36 @@ public class ControlManager : MonoBehaviour
             }
             else
             {
-                Escape(PlayersDic[from].Board);
+                Escape(StageManager.Instance.PlayersDic[from].Board);
                 flag = true;
             }
             Debug.Log(flag);
             if (!flag)
             {
-                PlayersDic[from].DoAction();
+                StageManager.Instance.PlayersDic[from].DoAction();
             }
         }
     }
 
     public void StartGame(int playerCount)
     {
-        if (PlayersDic == null)
+        if (StageManager.Instance.PlayersDic == null)
         {
-            PlayersDic = new Dictionary<int, Player>();
             AirConsole.instance.SetActivePlayers(Mathf.Clamp(playerCount, MAX_PLAYER_COUNT, 4));
             var playerIds = AirConsole.instance.GetActivePlayerDeviceIds;
-            for (int i = 0; i < playerIds.Count; i++)
-            {
-                PlayersDic[playerIds[i]] = Instantiate(playerPrefab,
-                    transform.GetChild(i).position,
-                    Quaternion.identity, StageManager.Instance.transform)
-                    .GetComponent<Player>();
-                PlayersDic[playerIds[i]].Id = playerIds[i];
-                PlayersDic[playerIds[i]].SetColor(GetColorForIndex(i));
-            }
+            StageManager.Instance.CreatePlayers(playerIds.ToList());
         }
         StageManager.Instance.Generate(playerCount);
-        foreach(int key in PlayersDic.Keys)
+        foreach(int key in StageManager.Instance.PlayersDic.Keys)
         {
             AirConsole.instance.Message(key, "STARTING");
         }
         timer.CountDown(41);
     }
 
-    private Color GetColorForIndex(int i)
-    {
-        switch (i)
-        {
-            case 0:
-                return Color.red;
-            case 1:
-                return Color.green;
-            case 2:
-                return Color.blue;
-            case 3:
-                return Color.magenta;
-            default:
-                return Color.black;
-        }
-    }
-
     public void Escape(Ship ship)
     {
-        foreach(Player player in PlayersDic.Values)
+        foreach(Player player in StageManager.Instance.PlayersDic.Values)
         {
             if (player.Board == ship)
             {
@@ -224,17 +187,17 @@ public class ControlManager : MonoBehaviour
 
     public void Death()
     {
-        foreach(int key in PlayersDic.Keys)
+        foreach(int key in StageManager.Instance.PlayersDic.Keys)
         {
             AirConsole.instance.Message(key, "END");
         }
 
-        foreach(Player player in PlayersDic.Values)
+        foreach(Player player in StageManager.Instance.PlayersDic.Values)
         {
             player.PhysicsRigidBody.velocity = Vector3.zero;
         }
 
-        foreach (var ship in FindObjectsOfType<Ship>())
+        foreach (var ship in StageManager.Instance.SceneShips)
         {
             ship.UpdateStatusUI(false);
         }
@@ -249,7 +212,7 @@ public class ControlManager : MonoBehaviour
             Sequence cinamatic = DOTween.Sequence();
             cinamatic.AppendInterval(1.5f);
             cinamatic.AppendCallback(() => {
-                foreach (var ship in FindObjectsOfType<Ship>())
+                foreach (var ship in StageManager.Instance.SceneShips)
                 {
                     ship.UpdateStatusUI(false);
                     if (Random.Range(0, 1) > ship.SetTotalChancePoint())
@@ -269,13 +232,13 @@ public class ControlManager : MonoBehaviour
         Camera.main.transform.DOMove(new Vector3(0f, 7f, -5f), 1f);
         Camera.main.transform.DORotate(70f * Vector3.right, 1f);
         yield return new WaitForSeconds(3f);
-        foreach (int key in PlayersDic.Keys)
+        foreach (int key in StageManager.Instance.PlayersDic.Keys)
         {
-            foreach (var ship in FindObjectsOfType<Ship>())
+            foreach (var ship in StageManager.Instance.SceneShips)
             {
                 ship.UpdateStatusUI(true);
             }
-            PlayersDic[key].transform.position = Vector3.zero;
+            StageManager.Instance.PlayersDic[key].transform.position = Vector3.zero;
             AirConsole.instance.Message(key, "RESTART");
         }
         success = 0;
