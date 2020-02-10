@@ -769,12 +769,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5554145d004c47a68b0a9bc60f93573, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Board: {fileID: 0}
-  Id: 0
-  PickedComponent: {fileID: 0}
-  PhysicsRigidBody: {fileID: 5629610937189086359}
-  Renderer: {fileID: 5824574972995932620}
-  Hand: {fileID: 7881961914468355945}
+  _hand: {fileID: 7881961914468355945}
+  _renderer: {fileID: 5824574972995932620}
 --- !u!54 &5629610937189086359
 Rigidbody:
   m_ObjectHideFlags: 0

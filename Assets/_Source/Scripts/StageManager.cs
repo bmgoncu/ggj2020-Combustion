@@ -28,9 +28,7 @@ public class StageManager : SingletonComponent<StageManager>
             transform
         ).GetComponent<Player>();
 
-        player.Id = playerId;
-        player.Index = index;
-        player.SetColor(GetColorForIndex(index));
+        player.Initialize(playerId, index);
 
         return player;
     }
@@ -41,6 +39,7 @@ public class StageManager : SingletonComponent<StageManager>
         player.transform.rotation = transform.GetChild(player.Index).rotation;
     }
 
+    /*
     public void CreatePlayers(List<int> playerIds)
     {
         PlayersDic = new Dictionary<int, Player>();
@@ -54,6 +53,7 @@ public class StageManager : SingletonComponent<StageManager>
             PlayersDic[playerIds[i]].SetColor(GetColorForIndex(i));
         }
     }
+    */
 
     public void Generate(int playerCount)
     {
@@ -116,23 +116,6 @@ public class StageManager : SingletonComponent<StageManager>
         }
         return true;
     }
-    
-    private Color GetColorForIndex(int i)
-    {
-        switch (i)
-        {
-            case 0:
-                return Color.red;
-            case 1:
-                return Color.green;
-            case 2:
-                return Color.blue;
-            case 3:
-                return Color.magenta;
-            default:
-                return Color.black;
-        }
-    }
 
     public void Clean()
     {
@@ -149,9 +132,11 @@ public class StageManager : SingletonComponent<StageManager>
             ship.ResetShip();
         }
 
+        /*
         foreach (Player player in PlayersDic.Values)
         {
             player.ResetPlayer();
         }
+        */
     }
 }

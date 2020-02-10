@@ -42,7 +42,7 @@ public class HudUI : MonoBehaviour
             _countdown.text = i + "";
             yield return new WaitForSeconds(1f);
         }
-        ControlManager.Instance.InitGame();
+        ControlManager.Instance.StartGame();
         _countdown.gameObject.SetActive(false);
     }
 }

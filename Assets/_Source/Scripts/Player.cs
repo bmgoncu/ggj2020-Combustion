@@ -4,84 +4,88 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public Ship Board;
+    const int _INTERACTION_DIST_ = 1;
 
-    public int Id;
-    public int Index;
-    public ShipComponent PickedComponent;
-    public Rigidbody PhysicsRigidBody;
-    public SkinnedMeshRenderer Renderer;
+    const float _SHIP_DISTANCE_ = 3f;
+    const float _VELOCITY_MULTIPLIER_ = 5;
 
-    public Color color;
+    [SerializeField] Transform _hand;
 
-    public Transform Hand;
+    [SerializeField] SkinnedMeshRenderer _renderer;
+
+    public int Id { get; private set; }
+    public int Index { get; private set; }
+
+    public Ship Board { get; private set; }
 
     Animator _animator;
+    ShipComponent _pickedComponent;
+    Rigidbody _physicsBody;
 
-    private const int INTERACTION_DIST = 1;
-    private const float SHIP_DISTANCE = 3f;
-    private const float VELOCITY_MULTIPLIER = 5;
-
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        PhysicsRigidBody = GetComponent<Rigidbody>();
         _animator = GetComponent<Animator>();
+        _physicsBody = GetComponent<Rigidbody>();
     }
 
-    public void SetColor(Color c)
+    public void Initialize(int id)
     {
-        color = c;
-        Renderer.materials[1].color = c;
+        Id = id;
     }
 
-    void Update()
+    public void Initialize(int id, int index)
     {
-        if (Board != null)
-        {
-            return;
-        }
+        Initialize(id);
 
-        if (transform.position.x < -7.5f)
-        {
-            transform.position = new Vector3(-7.5f, 0f, transform.position.z);
-            PhysicsRigidBody.velocity = new Vector3(0f, 0f, PhysicsRigidBody.velocity.z);
-        }
+        Index = index;
 
-        if (transform.position.x > 7.5f)
+        switch (index)
         {
-            transform.position = new Vector3(7.5f, 0f, transform.position.z);
-            PhysicsRigidBody.velocity = new Vector3(0f, 0f, PhysicsRigidBody.velocity.z);
+            case 0:
+                _renderer.materials[1].color = Color.red;
+                break;
+            case 1:
+                _renderer.materials[1].color = Color.green;
+                break;
+            case 2:
+                _renderer.materials[1].color = Color.blue;
+                break;
+            case 3:
+                _renderer.materials[1].color = Color.magenta;
+                break;
         }
+    }
 
-        if (transform.position.z < -7f)
-        {
-            transform.position = new Vector3(transform.position.x, 0f, -7f);
-            PhysicsRigidBody.velocity = new Vector3(PhysicsRigidBody.velocity.x, 0f, 0f);
-        }
+    public string GetColor()
+    {
+        Color c = _renderer.materials[1].color;
 
-        if (transform.position.z > 3f)
-        {
-            transform.position = new Vector3(transform.position.x, 0f, 3f);
-            PhysicsRigidBody.velocity = new Vector3(PhysicsRigidBody.velocity.x, 0f, 0f);
-        }
+        if (c.Equals(Color.red)) { return "red"; }
+        if (c.Equals(Color.green)) { return "green"; }
+        if (c.Equals(Color.blue)) { return "blue"; }
+        if (c.Equals(Color.magenta)) { return "purple"; }
+
+        return "gray";
     }
 
     public void Move(Vector2 vec)
     {
         vec = vec.normalized;
-        PhysicsRigidBody.velocity = new Vector3(vec.x * VELOCITY_MULTIPLIER, 0f, vec.y * VELOCITY_MULTIPLIER);
+        _physicsBody.velocity = _VELOCITY_MULTIPLIER_ * new Vector3(vec.x, 0f, vec.y);
 
-        float angle = Mathf.PI / 2f - Mathf.Atan2(vec.y, vec.x);
-        transform.rotation = Quaternion.Euler(0f, angle * Mathf.Rad2Deg, 0f);
+        if (!vec.Equals(Vector2.zero))
+        {
+            float angle = Mathf.PI / 2f - Mathf.Atan2(vec.y, vec.x);
+            transform.rotation = Quaternion.Euler(0f, angle * Mathf.Rad2Deg, 0f);
+        }
 
         if (vec.Equals(Vector2.zero))
         {
-            _animator.SetInteger("Param", PickedComponent == null ? 0 : 10);
+            _animator.SetInteger("Param", _pickedComponent == null ? 0 : 10);
         }
         else
         {
-            _animator.SetInteger("Param", PickedComponent == null ? 1 : 11);
+            _animator.SetInteger("Param", _pickedComponent == null ? 1 : 11);
         }
     }
 
@@ -91,12 +95,12 @@ public class Player : MonoBehaviour
         {
             return;
         }
-        if (PickedComponent == null)
+        if (_pickedComponent == null)
         {
             // Get advesary ships
-            var availableShips = GetObjectInRange<Ship>(SHIP_DISTANCE, (s) => s.Escaped == false/*s.OwnerId != Id*/);
+            var availableShips = GetObjectInRange<Ship>(_SHIP_DISTANCE_, (s) => s.Escaped == false/*s.OwnerId != Id*/);
             var advesaryShip = (availableShips.Count > 0) ? availableShips[0] : null;
-            var availableShipParts = GetObjectInRange<ShipComponent>(INTERACTION_DIST, (sc) => !sc.IsUsed);
+            var availableShipParts = GetObjectInRange<ShipComponent>(_INTERACTION_DIST_, (sc) => !sc.IsUsed);
             var selectedShipPart = (availableShipParts.Count > 0) ? availableShipParts[UnityEngine.Random.Range(0, availableShipParts.Count)] : null;
 
             bool shipiscloser = true;
@@ -125,14 +129,14 @@ public class Player : MonoBehaviour
         else
         {
             // Get my ship
-            var availableShips = GetObjectInRange<Ship>(INTERACTION_DIST, (s) => true/*s.OwnerId == Id*/);
+            var availableShips = GetObjectInRange<Ship>(_INTERACTION_DIST_, (s) => true/*s.OwnerId == Id*/);
             var ownerShip = (availableShips.Count > 0) ? availableShips[0] : null;
 
             if (ownerShip != null)
             {
-                if (PickedComponent.Attach(ownerShip))
+                if (_pickedComponent.Attach(ownerShip))
                 {
-                    PickedComponent = null;
+                    _pickedComponent = null;
                 }
                 /*
                 
@@ -147,21 +151,21 @@ public class Player : MonoBehaviour
 
     public bool Pick(ShipComponent component)
     {
-        if (PickedComponent != null)
+        if (_pickedComponent != null)
         {
             return false;
         }
 
-        PickedComponent = component;
+        _pickedComponent = component;
 
-        component.Pick(Hand);
+        component.Pick(_hand);
 
         return true;
     }
 
     public ShipComponent Drop()
     {
-        ShipComponent comp = PickedComponent;
+        ShipComponent comp = _pickedComponent;
 
         if (comp == null)
         {
@@ -170,7 +174,7 @@ public class Player : MonoBehaviour
 
         comp.Drop();
 
-        PickedComponent = null;
+        _pickedComponent = null;
 
         return comp;
     }
@@ -212,7 +216,13 @@ public class Player : MonoBehaviour
     public void ResetPlayer()
     {
         transform.SetParent(null);
+
         Board = null;
-        PickedComponent = null;
+
+        _pickedComponent = null;
+
+        _physicsBody.velocity = Vector2.zero;
+
+        _animator.SetInteger("Param", 0);
     }
 }

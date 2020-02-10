@@ -17,7 +17,7 @@ public class ControlManager : SingletonComponent<ControlManager>
 
     bool _refreshLobbyNextRound;
 
-    int _winnersCount = 0;
+    int _winnersCount = -1; // when it's -1, that means we're in the lobby
 
     protected override void Awake()
     {
@@ -40,7 +40,7 @@ public class ControlManager : SingletonComponent<ControlManager>
 
     void OnConnect(int deviceId)
     {
-        if (AirConsole.instance.GetActivePlayerDeviceIds.Count == 0)
+        if (_winnersCount == -1)
         {
             if (ActivePlayers.Count < 4)
             {
@@ -72,10 +72,10 @@ public class ControlManager : SingletonComponent<ControlManager>
                 Player player = ActivePlayers[deviceId];
                 ActivePlayers.Remove(deviceId);
 
-                player.Id = newId;
+                player.Initialize(newId);
                 ActivePlayers.Add(newId, player);
 
-                if (AirConsole.instance.GetActivePlayerDeviceIds.Count != 0)
+                if (_winnersCount != -1)
                 {
                     player.gameObject.SetActive(false);
                 }
@@ -92,7 +92,7 @@ public class ControlManager : SingletonComponent<ControlManager>
             InactivePlayers.Remove(deviceId);
         }
 
-        if (AirConsole.instance.GetActivePlayerDeviceIds.Count == 0)
+        if (_winnersCount == -1)
         {
             LobbyUpdate();
         }
@@ -104,13 +104,16 @@ public class ControlManager : SingletonComponent<ControlManager>
 
     void OnMessage(int from, JToken data)
     {
-        if (from == AirConsole.instance.GetMasterControllerDeviceId() && data.ToString() == "START")
+        if (from == AirConsole.instance.GetMasterControllerDeviceId())
         {
-            StartGame();
-            return;
+            if (data.ToString().Equals("START"))
+            {
+                InitGame();
+                return;
+            }
         }
 
-        if  (AirConsole.instance.GetActivePlayerDeviceIds.Count == 0 || !ActivePlayers.ContainsKey(from))
+        if (AirConsole.instance.GetActivePlayerDeviceIds.Count == 0 || !ActivePlayers.ContainsKey(from))
         {
             return;
         }
@@ -162,7 +165,7 @@ public class ControlManager : SingletonComponent<ControlManager>
 
             if (!flag)
             {
-                StageManager.Instance.PlayersDic[from].DoAction();
+                ActivePlayers[from].DoAction();
             }
         }
     }
@@ -207,7 +210,7 @@ public class ControlManager : SingletonComponent<ControlManager>
         string color = "gray";
         if (ActivePlayers.ContainsKey(deviceId))
         {
-            color = GetColorString(ActivePlayers[deviceId].color);
+            color = ActivePlayers[deviceId].GetColor();
         }
 
         List<int> deviceIds = AirConsole.instance.GetControllerDeviceIds();
@@ -221,7 +224,7 @@ public class ControlManager : SingletonComponent<ControlManager>
                 string c = "gray";
                 if (ActivePlayers.ContainsKey(did))
                 {
-                    c = GetColorString(ActivePlayers[did].color);
+                    c = ActivePlayers[did].GetColor();
                 }
                 AirConsole.instance.Message(deviceId, "t." + c);
             }
@@ -230,59 +233,54 @@ public class ControlManager : SingletonComponent<ControlManager>
         AirConsole.instance.Message(deviceId, "s." + color);
     }
 
-    void StartGame()
+    /* InitGame triggers countdown in UI */
+
+    void InitGame()
     {
+        _winnersCount = 0;
+
         Camera.main.transform.DOMove(new Vector3(0f, 7f, -5f), 1f);
         Camera.main.transform.DORotate(70f * Vector3.right, 1f).OnComplete(() => {
             _hudUI.StartCountdown(3);
         });
+
         foreach (int did in ActivePlayers.Keys)
         {
             AirConsole.instance.Message(did, "STARTING");
         }
     }
 
-    public void InitGame()
+    /* When the countdown is over, UI triggers InitGame - that's why it is public */
+
+    public void StartGame()
     {
         AirConsole.instance.SetActivePlayers(Mathf.Clamp(ActivePlayers.Count, _MIN_PLAYER_COUNT_, _MAX_PLAYER_COUNT_));
-        _hudUI.StartTimer(61);
+
+        foreach (var ship in StageManager.Instance.SceneShips)
+        {
+            ship.UpdateStatusUI(true);
+        }
+
+        _hudUI.StartTimer(11);
     }
 
-    string GetColorString(Color c)
+    void Escape(Ship ship)
     {
-        if (c.Equals(Color.red))
-        {
-            return "red";
-        }
-        if (c.Equals(Color.green))
-        {
-            return "green";
-        }
-        if (c.Equals(Color.blue))
-        {
-            return "blue";
-        }
-        if (c.Equals(Color.magenta))
-        {
-            return "purple";
-        }
-        return "gray";
-    }
-
-    public void Escape(Ship ship)
-    {
-        foreach(Player player in ActivePlayers.Values)
+        foreach (Player player in ActivePlayers.Values)
         {
             if (player.Board == ship)
             {
                 AirConsole.instance.Message(player.Id, "ESCAPEATTEMPT");
             }
         }
-        ship.transform.DOMove(transform.position + Vector3.up * 25f, 2f).OnComplete(()=> {
+        ship.transform.DOMove(transform.position + Vector3.up * 25f, 2f).OnComplete(() =>
+        {
             _winnersCount++;
             ship.transform.position = new Vector3(-3f * _winnersCount, 25f, -5f);
         });
     }
+
+    /* when the round timer is over, UI triggers Death */
 
     public void Death()
     {
@@ -291,14 +289,14 @@ public class ControlManager : SingletonComponent<ControlManager>
             AirConsole.instance.Message(key, "END");
         }
 
-        foreach(Player player in ActivePlayers.Values)
-        {
-            player.PhysicsRigidBody.velocity = Vector3.zero;
-        }
-
         foreach (var ship in StageManager.Instance.SceneShips)
         {
             ship.UpdateStatusUI(false);
+        }
+
+        foreach (Player player in ActivePlayers.Values)
+        {
+            player.ResetPlayer();
         }
 
         StartCoroutine(EndScreen());
@@ -311,8 +309,9 @@ public class ControlManager : SingletonComponent<ControlManager>
         {
             Sequence cinamatic = DOTween.Sequence();
             cinamatic.AppendInterval(1.5f);
-            cinamatic.AppendCallback(() => {
-                foreach (var ship in StageManager.Instance.SceneShips)
+            cinamatic.AppendCallback(() =>
+            {
+                foreach (Ship ship in StageManager.Instance.SceneShips)
                 {
                     ship.UpdateStatusUI(false);
                     if (Random.Range(0, 1) > ship.SetTotalChancePoint())
@@ -327,31 +326,40 @@ public class ControlManager : SingletonComponent<ControlManager>
                 }
             });
         });
-        yield return new WaitForSeconds(7f);
-        StageManager.Instance.Clean();
-        Camera.main.transform.DOMove(new Vector3(0f, 7f, -5f), 1f);
-        Camera.main.transform.DORotate(70f * Vector3.right, 1f);
-        yield return new WaitForSeconds(3f);
 
-        foreach (int key in ActivePlayers.Keys)
-        {
-            foreach (var ship in StageManager.Instance.SceneShips)
-            {
-                ship.UpdateStatusUI(true);
-            }
-            StageManager.Instance.PlayersDic[key].transform.position = Vector3.zero;
-            AirConsole.instance.Message(key, "RESTART");
-        }
-        foreach(Player player in ActivePlayers.Values)
+        yield return new WaitForSeconds(7f);
+
+        StageManager.Instance.Clean();
+
+        Camera.main.transform.DOMove(new Vector3(0f, 0.07f, -5f), 1f);
+        Camera.main.transform.DORotate(19f * Vector3.left, 1f);
+
+        _winnersCount = -1;
+        AirConsole.instance.SetActivePlayers(0);
+
+        foreach (Player player in ActivePlayers.Values)
         {
             player.gameObject.SetActive(true);
+            player.ResetPlayer();
             StageManager.Instance.ResetPlayerTransform(player);
+            AirConsole.instance.Message(player.Id, "RESTART");
         }
+
         if (_refreshLobbyNextRound)
         {
+            if (InactivePlayers.Count > 0)
+            {
+                for(int i=0; i<InactivePlayers.Count && ActivePlayers.Count <= 4; i++)
+                {
+                    int player = InactivePlayers[i];
+                    InactivePlayers.Remove(player);
+                    OnConnect(player);
+                }
+            }
             _refreshLobbyNextRound = false;
             LobbyUpdate();
         }
+
         _winnersCount = 0;
     }
 }
