@@ -13,11 +13,12 @@ public class ControlManager : SingletonComponent<ControlManager>
     [SerializeField] HudUI _hudUI;
 
     public List<int> InactivePlayers { get; private set; } = new List<int>();
+
     public Dictionary<int, Player> ActivePlayers { get; private set; } = new Dictionary<int, Player>();
 
-    bool _refreshLobbyNextRound;
+    bool _refreshLobbyNextRound; // sometimes we need to refresh the lobby.
 
-    int _winnersCount = -1; // when it's -1, that means we're in the lobby
+    int _winnersCount = -1; // when it's -1, that means we're in the lobby.
 
     protected override void Awake()
     {
@@ -102,6 +103,8 @@ public class ControlManager : SingletonComponent<ControlManager>
         }
     }
 
+    // TODO: bu metotta bitmiş gemiye biniyor mu kontrolü var.
+    // Yakındaki geminin alındığı fonksiyona taşınmalı.
     void OnMessage(int from, JToken data)
     {
         if (from == AirConsole.instance.GetMasterControllerDeviceId())
@@ -125,7 +128,6 @@ public class ControlManager : SingletonComponent<ControlManager>
         {
             bool flag = false;
 
-            // we can store approached item in the player script...
             if (!ActivePlayers[from].Board)
             {
                 foreach (Ship ship in StageManager.Instance.SceneShips)
@@ -133,17 +135,17 @@ public class ControlManager : SingletonComponent<ControlManager>
                     if (Vector3.Distance(ship.transform.position, ActivePlayers[from].transform.position) < 3f)
                     {
                         int ftc = 0, orc = 0, enc = 0;
-                        for (int i = 0; i < ship.transform.childCount; i++)
+                        foreach (ShipComponent shipComponent in ship.CurrentComponents)
                         {
-                            if (ship.transform.GetChild(i).GetComponent<ShipComponent>().Type == ShipComponentType.ENGINE)
+                            if (shipComponent.Type == ShipComponentType.ENGINE)
                             {
                                 enc++;
                             }
-                            if (ship.transform.GetChild(i).GetComponent<ShipComponent>().Type == ShipComponentType.FUEL_TANK)
+                            if (shipComponent.Type == ShipComponentType.FUEL_TANK)
                             {
                                 ftc++;
                             }
-                            if (ship.transform.GetChild(i).GetComponent<ShipComponent>().Type == ShipComponentType.ORBITER)
+                            if (shipComponent.Type == ShipComponentType.ORBITER)
                             {
                                 orc++;
                             }
@@ -248,6 +250,8 @@ public class ControlManager : SingletonComponent<ControlManager>
         {
             AirConsole.instance.Message(did, "STARTING");
         }
+
+        StageManager.Instance.Generate(ActivePlayers.Count);
     }
 
     /* When the countdown is over, UI triggers InitGame - that's why it is public */
@@ -261,7 +265,8 @@ public class ControlManager : SingletonComponent<ControlManager>
             ship.UpdateStatusUI(true);
         }
 
-        _hudUI.StartTimer(11);
+        _hudUI.StartTimer(31);
+        Distraction.Instance.EnableDistraction();
     }
 
     void Escape(Ship ship)
@@ -284,7 +289,9 @@ public class ControlManager : SingletonComponent<ControlManager>
 
     public void Death()
     {
-        foreach(int key in ActivePlayers.Keys)
+        Distraction.Instance.DisableDistraction();
+
+        foreach (int key in ActivePlayers.Keys)
         {
             AirConsole.instance.Message(key, "END");
         }

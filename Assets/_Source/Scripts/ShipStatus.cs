@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
+/* TODO: UI yazacağım demiştin (Burak) */
 public class ShipStatus : MonoBehaviour
 {
     public Slider ChanceSlider;

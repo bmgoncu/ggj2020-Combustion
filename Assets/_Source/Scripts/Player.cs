@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    const int _INTERACTION_DIST_ = 1;
-
+    /* TODO: following values should be calibrated */
+    const float _INTERACTION_DIST_ = 1f;
     const float _SHIP_DISTANCE_ = 3f;
-    const float _VELOCITY_MULTIPLIER_ = 5;
+    const float _VELOCITY_MULTIPLIER_ = 5f;
 
     [SerializeField] Transform _hand;
 
@@ -33,6 +33,7 @@ public class Player : MonoBehaviour
         Id = id;
     }
 
+    /* TODO: let's use better looking colors below */
     public void Initialize(int id, int index)
     {
         Initialize(id);
@@ -89,6 +90,12 @@ public class Player : MonoBehaviour
         }
     }
 
+    /*
+     * TODO: GetObjectInRange fonksiyonu değiştirilmeli mi?
+     * 1 - liste almaya gerek yok, bana en yakın lazım
+     * 2 - liste yakınlığa göre sıralı değil. İlk eleman daha uzakta olsa da range içerisindeyse alıyor.
+     * Ayrıca gemiye binme kontrolü vs burada olmalı gibi geliyor bana.
+     */
     public void DoAction()
     {
         if (Board)
@@ -181,7 +188,7 @@ public class Player : MonoBehaviour
 
     private List<T> GetObjectInRange<T>(float range, Func<T, bool> condition) where T : MonoBehaviour
     {
-        var emptyComponents = FindObjectsOfType<T>();
+        var emptyComponents = FindObjectsOfType<T>(); // <-- we eliminated?
         List<T> results = new List<T>();
         for (int i = 0; i < emptyComponents.Length; i++)
         {

@@ -3022,6 +3022,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1932796120}
   - component: {fileID: 1932796121}
+  - component: {fileID: 1932796122}
   m_Layer: 0
   m_Name: Control Manager
   m_TagString: Untagged
@@ -3056,6 +3057,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _hudUI: {fileID: 82707849}
+--- !u!114 &1932796122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1932796119}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43841ff9262cb4573ae076e3792ba50d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _minPeriod: 5
+  _maxPeriod: 10
+  _minMagnitude: 1
+  _maxMagnitude: 5
 --- !u!4 &2045998690 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3710167484088888871, guid: e7dd25e19b63e4c16a3a028601cffb50,
@@ -3128,46 +3145,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1690737297665053087, guid: 07afefbb03f44984aa72f8a164ee7c7c,
-        type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1690737297665053087, guid: 07afefbb03f44984aa72f8a164ee7c7c,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1690737297665053087, guid: 07afefbb03f44984aa72f8a164ee7c7c,
-        type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3613840376242415145, guid: 07afefbb03f44984aa72f8a164ee7c7c,
-        type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 3613840376242415145, guid: 07afefbb03f44984aa72f8a164ee7c7c,
-        type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3613840376242415145, guid: 07afefbb03f44984aa72f8a164ee7c7c,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -5.99
-      objectReference: {fileID: 0}
-    - target: {fileID: 3613840376242415145, guid: 07afefbb03f44984aa72f8a164ee7c7c,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3613840376242415145, guid: 07afefbb03f44984aa72f8a164ee7c7c,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0.38
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 07afefbb03f44984aa72f8a164ee7c7c, type: 3}

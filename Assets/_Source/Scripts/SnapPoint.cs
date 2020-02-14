@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+/* TODO: Konuşmamız gereken şeyler var design üzerine*/
 public class SnapPoint : MonoBehaviour
 {
     /* component types accepted by this snap point */

@@ -1,23 +1,22 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
+/*  TODO: Bu sınıf güzel ama pooling yapmıyor - Soru yapmalı mı? */
 public class StageManager : SingletonComponent<StageManager>
 {
+    /* update following value */
+    readonly Vector3 EXTREMES = new Vector3(5f, -5f, 0.3f);
+    /* update the value above */
+
     public List<Ship> SceneShips;
+
     public GameObject PlayerPrefab;
+
     public GameObject[] Engine;
     public GameObject[] Toilet;
     public GameObject[] FuelTank;
-    public Dictionary<int,Player> PlayersDic { get; private set; }
-    private readonly Vector3 EXTREMES = new Vector3(5f, -6f, 2f);
-
-    private const float _MIN_DIST_ = 10f;
-    private const float _STEP_ = 0.05f;
 
     readonly List<GameObject> _instantiated = new List<GameObject>();
-
-    List<Vector3> _players = new List<Vector3>();
 
     public Player CreatePlayer(int playerId, int index)
     {
@@ -35,85 +34,61 @@ public class StageManager : SingletonComponent<StageManager>
 
     public void ResetPlayerTransform(Player player)
     {
+        player.transform.SetParent(transform);
         player.transform.position = transform.GetChild(player.Index).position;
         player.transform.rotation = transform.GetChild(player.Index).rotation;
     }
 
-    /*
-    public void CreatePlayers(List<int> playerIds)
-    {
-        PlayersDic = new Dictionary<int, Player>();
-        for (int i = 0; i < playerIds.Count; i++)
-        {
-            PlayersDic[playerIds[i]] = Instantiate(PlayerPrefab,
-                    transform.GetChild(i).position,
-                    Quaternion.identity, transform)
-                .GetComponent<Player>();
-            PlayersDic[playerIds[i]].Id = playerIds[i];
-            PlayersDic[playerIds[i]].SetColor(GetColorForIndex(i));
-        }
-    }
-    */
-
     public void Generate(int playerCount)
     {
-        foreach (Player player in PlayersDic.Values)
-        {
-            _players.Add(player.transform.position);
-        }
         PlaceObject(Engine, playerCount);
         PlaceObject(FuelTank, playerCount);
         PlaceObject(Toilet, playerCount);
-
-        /*
-        int counter = 0;
-        foreach (Ship ship in ControlManager.Instance.PlayersDic.Values)
-        {
-            ship.OwnerId = ++counter;
-        }
-        */
     }
 
-    public void PlaceObject(GameObject[] obj, int count)
+    void PlaceObject(GameObject[] obj, int count)
     {
         count += Random.Range(0, 2);
+
         for (int i = 0; i < count; i++)
         {
-            Vector3 randomPosition;
-            float dist = _MIN_DIST_;
+            Vector3 position;
+            float dist = 10f;
             do
             {
-                randomPosition = new Vector3(Random.Range(-EXTREMES.x, EXTREMES.x), 0.2f, Random.Range(EXTREMES.y, EXTREMES.z));
-                if (Valid(dist, randomPosition))
+                position = new Vector3(Random.Range(-EXTREMES.x, EXTREMES.x), 0.2f, Random.Range(EXTREMES.y, EXTREMES.z));
+                if (Valid(dist, position))
                 {
-                    _instantiated.Add(Instantiate(obj[Random.Range(0,obj.Length)], randomPosition, Quaternion.identity, transform));
+                    _instantiated.Add(Instantiate(obj[Random.Range(0,obj.Length)], position, Quaternion.identity, transform));
                 }
                 else
                 {
-                    dist -= _STEP_;
-                    randomPosition = Vector3.negativeInfinity;
+                    dist -= 0.025f;
+                    position = Vector3.negativeInfinity;
                 }
             }
-            while (randomPosition.Equals(Vector3.negativeInfinity));
+            while (position.Equals(Vector3.negativeInfinity));
         }
     }
 
-    public bool Valid(float dist, Vector3 pos)
+    bool Valid(float dist, Vector3 pos)
     {
-        foreach(Vector3 playerpos in _players)
+        for (int i = 0; i < 4; i++)
         {
-            if (Vector3.Distance(pos, playerpos) < dist)
+            if (Vector3.Distance(pos, transform.GetChild(i).position) < dist)
             {
                 return false;
             }
         }
-        foreach(GameObject go in _instantiated)
+
+        foreach (GameObject go in _instantiated)
         {
             if (Vector3.Distance(pos, go.transform.position) < dist)
             {
                 return false;
             }
         }
+
         return true;
     }
 
@@ -124,19 +99,11 @@ public class StageManager : SingletonComponent<StageManager>
             Destroy(_instantiated[i]);
         }
 
-        _players.Clear();
         _instantiated.Clear();
 
         foreach(Ship ship in SceneShips)
         {
             ship.ResetShip();
         }
-
-        /*
-        foreach (Player player in PlayersDic.Values)
-        {
-            player.ResetPlayer();
-        }
-        */
     }
 }
