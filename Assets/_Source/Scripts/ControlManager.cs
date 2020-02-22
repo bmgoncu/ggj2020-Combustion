@@ -5,41 +5,34 @@ using NDream.AirConsole;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
 
-public class ControlManager : MonoBehaviour
+public class ControlManager : SingletonComponent<ControlManager>
 {
-    static ControlManager _instance;
+    const int _MIN_PLAYER_COUNT_ = 2;
+    const int _MAX_PLAYER_COUNT_ = 4;
 
-    public static ControlManager Instance
+    [SerializeField] HudUI _hudUI;
+
+    public List<int> InactivePlayers { get; private set; } = new List<int>();
+
+    public Dictionary<int, Player> ActivePlayers { get; private set; } = new Dictionary<int, Player>();
+
+    bool _refreshLobbyNextRound; // sometimes we need to refresh the lobby.
+
+    int _winnersCount = -1; // when it's -1, that means we're in the lobby.
+
+    protected override void Awake()
     {
-        get
-        {
-            return _instance ? _instance : _instance = FindObjectOfType<ControlManager>();
-        }
-    }
+        base.Awake();
 
-    static int success = 0;
-
-    [SerializeField] GameObject playerPrefab;
-
-    [SerializeField] HudUI timer;
-
-    public Dictionary<int,Player> PlayersDic { get; private set; }
-
-    private const int MAX_PLAYER_COUNT = 2;
-
-    int playerCounter = 0;
-
-    public string[] colors= {"red", "green", "blue", "purple"};
-
-    void Awake()
-    {
-        AirConsole.instance.onMessage += OnMessage;
         AirConsole.instance.onConnect += OnConnect;
+        AirConsole.instance.onMessage += OnMessage;
         AirConsole.instance.onDisconnect += OnDisconnect;
     }
 
-    void OnDestroy()
+    protected override void OnDestroy()
     {
+        base.OnDestroy();
+
         if (AirConsole.instance != null)
         {
             AirConsole.instance.onMessage -= OnMessage;
@@ -48,104 +41,118 @@ public class ControlManager : MonoBehaviour
 
     void OnConnect(int deviceId)
     {
-        if (AirConsole.instance.GetActivePlayerDeviceIds.Count == 0)
+        if (_winnersCount == -1)
         {
-            playerCounter++;
-            if (AirConsole.instance.GetMasterControllerDeviceId() == deviceId)
+            if (ActivePlayers.Count < 4)
             {
-                AirConsole.instance.Message(deviceId, "MASTER");
-            }
-            if (playerCounter < 5)
-            {
-                AirConsole.instance.Message(deviceId, "s." + colors[playerCounter-1]);
-                foreach(int key in AirConsole.instance.GetControllerDeviceIds())
-                {
-                    if (key != deviceId)
-                    {
-                        AirConsole.instance.Message(key, "t." + colors[playerCounter-1]);
-                    }
-                }
-            }
-            /*
-            if (AirConsole.instance.GetControllerDeviceIds().Count >= MAX_PLAYER_COUNT)
-            {
-                Debug.Log("heyo");
-                StartGame(AirConsole.instance.GetControllerDeviceIds().Count);
+                ActivePlayers[deviceId] = StageManager.Instance.CreatePlayer(deviceId, FindIndex());
             }
             else
             {
-                // Bir şey yapma - eksik oyuncuyla oyunu başlatma tuşunu beklet.
+                InactivePlayers.Add(deviceId);
             }
-            */
+
+            LobbyUpdate(deviceId);
+        }
+        else
+        {
+            InactivePlayers.Add(deviceId);
+            _refreshLobbyNextRound = true;
         }
     }
 
     void OnDisconnect(int deviceId)
     {
-        int active_player = AirConsole.instance.ConvertDeviceIdToPlayerNumber(deviceId);
-        playerCounter--;
-        if (active_player != -1)
+        if (ActivePlayers.ContainsKey(deviceId))
         {
-            if (AirConsole.instance.GetControllerDeviceIds().Count >= 4)
+            if (InactivePlayers.Count > 0)
             {
-                // Start Game - gerekli mi belli değil.
+                int newId = InactivePlayers[0];
+                InactivePlayers.RemoveAt(0);
+
+                Player player = ActivePlayers[deviceId];
+                ActivePlayers.Remove(deviceId);
+
+                player.Initialize(newId);
+                ActivePlayers.Add(newId, player);
+
+                if (_winnersCount != -1)
+                {
+                    player.gameObject.SetActive(false);
+                }
             }
             else
             {
-                // AirConsole.instance.SetActivePlayers(0);
-                // Oyun yok ya da oyun devam...
+                Destroy(ActivePlayers[deviceId].gameObject);
+                ActivePlayers.Remove(deviceId);
             }
+        }
+
+        if (InactivePlayers.Contains(deviceId))
+        {
+            InactivePlayers.Remove(deviceId);
+        }
+
+        if (_winnersCount == -1)
+        {
+            LobbyUpdate();
+        }
+        else
+        {
+            _refreshLobbyNextRound = true;
         }
     }
 
+    // TODO: bu metotta bitmiş gemiye biniyor mu kontrolü var.
+    // Yakındaki geminin alındığı fonksiyona taşınmalı.
     void OnMessage(int from, JToken data)
     {
-        if (from == AirConsole.instance.GetMasterControllerDeviceId() && data.ToString() == "START")
+        if (from == AirConsole.instance.GetMasterControllerDeviceId())
         {
-            StartGame(AirConsole.instance.GetControllerDeviceIds().Count);
-        }
-        int active_player = AirConsole.instance.ConvertDeviceIdToPlayerNumber(from);
-
-        if  (active_player == -1 || PlayersDic == null || !PlayersDic.ContainsKey(from))
-        {
-            return;
+            if (data.ToString().Equals("START"))
+            {
+                InitGame();
+                return;
+            }
         }
 
-        if (data.ToString() == "START")
+        if (AirConsole.instance.GetActivePlayerDeviceIds.Count == 0 || !ActivePlayers.ContainsKey(from))
         {
             return;
         }
 
-        PlayersDic[from].Move(2f*new Vector2((float)data["x"], (float)data["y"]));
+        ActivePlayers[from].Move(new Vector2((float)data["x"], (float)data["y"]));
 
+        // we can send action as true/false again.
         if ((int)data["action"] == 1)
         {
             bool flag = false;
-            if (!PlayersDic[from].Board)
+
+            if (!ActivePlayers[from].Board)
             {
-                foreach (Ship ship in FindObjectsOfType<Ship>())
+                foreach (Ship ship in StageManager.Instance.SceneShips)
                 {
-                    if (Vector3.Distance(ship.transform.position, PlayersDic[from].transform.position) < 3f)
+                    if (Vector3.Distance(ship.transform.position, ActivePlayers[from].transform.position) < 3f)
                     {
                         int ftc = 0, orc = 0, enc = 0;
-                        for (int i = 0; i < ship.transform.childCount; i++)
+                        foreach (ShipComponent shipComponent in ship.CurrentComponents)
                         {
-                            if (ship.transform.GetChild(i).GetComponent<ShipComponent>().Type == ShipComponentType.ENGINE)
+                            if (shipComponent.Type == ShipComponentType.ENGINE)
                             {
                                 enc++;
                             }
-                            if (ship.transform.GetChild(i).GetComponent<ShipComponent>().Type == ShipComponentType.FUEL_TANK)
+                            if (shipComponent.Type == ShipComponentType.FUEL_TANK)
                             {
                                 ftc++;
                             }
-                            if (ship.transform.GetChild(i).GetComponent<ShipComponent>().Type == ShipComponentType.ORBITER)
+                            if (shipComponent.Type == ShipComponentType.ORBITER)
                             {
                                 orc++;
                             }
                         }
                         if (enc != 0 && orc != 0 && ftc != 0)
                         {
-                            PlayersDic[from].OnBoard(ship);
+                            ActivePlayers[from].OnBoard(ship);
                             flag = true;
                         }
                         break;
@@ -154,90 +161,151 @@ public class ControlManager : MonoBehaviour
             }
             else
             {
-                Escape(PlayersDic[from].Board);
+                Escape(ActivePlayers[from].Board);
                 flag = true;
             }
-            Debug.Log(flag);
+
             if (!flag)
             {
-                PlayersDic[from].DoAction();
+                ActivePlayers[from].DoAction();
             }
         }
     }
 
-    public void StartGame(int playerCount)
+    int FindIndex()
     {
-        if (PlayersDic == null)
+        HashSet<int> indexes = new HashSet<int> { 0, 1, 2, 3 };
+
+        foreach(Player player in ActivePlayers.Values)
         {
-            PlayersDic = new Dictionary<int, Player>();
-            AirConsole.instance.SetActivePlayers(Mathf.Clamp(playerCount, MAX_PLAYER_COUNT, 4));
-            var playerIds = AirConsole.instance.GetActivePlayerDeviceIds;
-            for (int i = 0; i < playerIds.Count; i++)
+            indexes.Remove(player.Index);
+        }
+
+        int ret = 4;
+        foreach (int index in indexes)
+        {
+            if (index < ret)
             {
-                PlayersDic[playerIds[i]] = Instantiate(playerPrefab,
-                    transform.GetChild(i).position,
-                    Quaternion.identity, StageManager.Instance.transform)
-                    .GetComponent<Player>();
-                PlayersDic[playerIds[i]].Id = playerIds[i];
-                PlayersDic[playerIds[i]].SetColor(GetColorForIndex(i));
+                ret = index;
             }
         }
-        StageManager.Instance.Generate(playerCount);
-        foreach(int key in PlayersDic.Keys)
-        {
-            AirConsole.instance.Message(key, "STARTING");
-        }
-        timer.CountDown(41);
+        return ret;
     }
 
-    private Color GetColorForIndex(int i)
+    void LobbyUpdate()
     {
-        switch (i)
+        AirConsole.instance.Broadcast("CLEAR");
+
+        foreach (int id in AirConsole.instance.GetControllerDeviceIds())
         {
-            case 0:
-                return Color.red;
-            case 1:
-                return Color.green;
-            case 2:
-                return Color.blue;
-            case 3:
-                return Color.magenta;
-            default:
-                return Color.black;
+            LobbyUpdate(id);
         }
     }
 
-    public void Escape(Ship ship)
+    void LobbyUpdate(int deviceId)
     {
-        foreach(Player player in PlayersDic.Values)
+        if (AirConsole.instance.GetMasterControllerDeviceId() == deviceId)
+        {
+            AirConsole.instance.Message(deviceId, "MASTER");
+        }
+
+        string color = "gray";
+        if (ActivePlayers.ContainsKey(deviceId))
+        {
+            color = ActivePlayers[deviceId].GetColor();
+        }
+
+        List<int> deviceIds = AirConsole.instance.GetControllerDeviceIds();
+
+        foreach (int did in deviceIds)
+        {
+            if (deviceId != did)
+            {
+                AirConsole.instance.Message(did, "t." + color);
+
+                string c = "gray";
+                if (ActivePlayers.ContainsKey(did))
+                {
+                    c = ActivePlayers[did].GetColor();
+                }
+                AirConsole.instance.Message(deviceId, "t." + c);
+            }
+        }
+
+        AirConsole.instance.Message(deviceId, "s." + color);
+    }
+
+    /* InitGame triggers countdown in UI */
+
+    void InitGame()
+    {
+        _winnersCount = 0;
+
+        Camera.main.transform.DOMove(new Vector3(0f, 7f, -5f), 1f);
+        Camera.main.transform.DORotate(70f * Vector3.right, 1f).OnComplete(() => {
+            _hudUI.StartCountdown(3);
+        });
+
+        foreach (int did in ActivePlayers.Keys)
+        {
+            AirConsole.instance.Message(did, "STARTING");
+        }
+
+        StageManager.Instance.Generate(ActivePlayers.Count);
+    }
+
+    /* When the countdown is over, UI triggers InitGame - that's why it is public */
+
+    public void StartGame()
+    {
+        AirConsole.instance.SetActivePlayers(Mathf.Clamp(ActivePlayers.Count, _MIN_PLAYER_COUNT_, _MAX_PLAYER_COUNT_));
+
+        foreach (var ship in StageManager.Instance.SceneShips)
+        {
+            ship.UpdateStatusUI(true);
+        }
+
+        _hudUI.StartTimer(31);
+        Distraction.Instance.EnableDistraction();
+    }
+
+    void Escape(Ship ship)
+    {
+        foreach (Player player in ActivePlayers.Values)
         {
             if (player.Board == ship)
             {
                 AirConsole.instance.Message(player.Id, "ESCAPEATTEMPT");
             }
         }
-        ship.transform.DOMove(transform.position + Vector3.up * 25f, 2f).OnComplete(()=> {
-            success++;
-            ship.transform.position = new Vector3(-3f * success, 25f, -5f);
+        ship.transform.DOMove(transform.position + Vector3.up * 25f, 2f).OnComplete(() =>
+        {
+            _winnersCount++;
+            ship.transform.position = new Vector3(-3f * _winnersCount, 25f, -5f);
         });
     }
 
+    /* when the round timer is over, UI triggers Death */
+
     public void Death()
     {
-        foreach(int key in PlayersDic.Keys)
+        Distraction.Instance.DisableDistraction();
+
+        foreach (int key in ActivePlayers.Keys)
         {
             AirConsole.instance.Message(key, "END");
         }
 
-        foreach(Player player in PlayersDic.Values)
-        {
-            player.PhysicsRigidBody.velocity = Vector3.zero;
-        }
-
-        foreach (var ship in FindObjectsOfType<Ship>())
+        foreach (var ship in StageManager.Instance.SceneShips)
         {
             ship.UpdateStatusUI(false);
         }
+
+        foreach (Player player in ActivePlayers.Values)
+        {
+            player.ResetPlayer();
+        }
+
         StartCoroutine(EndScreen());
     }
 
@@ -248,8 +316,9 @@ public class ControlManager : MonoBehaviour
         {
             Sequence cinamatic = DOTween.Sequence();
             cinamatic.AppendInterval(1.5f);
-            cinamatic.AppendCallback(() => {
-                foreach (var ship in FindObjectsOfType<Ship>())
+            cinamatic.AppendCallback(() =>
+            {
+                foreach (Ship ship in StageManager.Instance.SceneShips)
                 {
                     ship.UpdateStatusUI(false);
                     if (Random.Range(0, 1) > ship.SetTotalChancePoint())
@@ -264,20 +333,40 @@ public class ControlManager : MonoBehaviour
                 }
             });
         });
+
         yield return new WaitForSeconds(7f);
+
         StageManager.Instance.Clean();
-        Camera.main.transform.DOMove(new Vector3(0f, 7f, -5f), 1f);
-        Camera.main.transform.DORotate(70f * Vector3.right, 1f);
-        yield return new WaitForSeconds(3f);
-        foreach (int key in PlayersDic.Keys)
+
+        Camera.main.transform.DOMove(new Vector3(0f, 0.07f, -5f), 1f);
+        Camera.main.transform.DORotate(19f * Vector3.left, 1f);
+
+        _winnersCount = -1;
+        AirConsole.instance.SetActivePlayers(0);
+
+        foreach (Player player in ActivePlayers.Values)
         {
-            foreach (var ship in FindObjectsOfType<Ship>())
-            {
-                ship.UpdateStatusUI(true);
-            }
-            PlayersDic[key].transform.position = Vector3.zero;
-            AirConsole.instance.Message(key, "RESTART");
+            player.gameObject.SetActive(true);
+            player.ResetPlayer();
+            StageManager.Instance.ResetPlayerTransform(player);
+            AirConsole.instance.Message(player.Id, "RESTART");
         }
-        success = 0;
+
+        if (_refreshLobbyNextRound)
+        {
+            if (InactivePlayers.Count > 0)
+            {
+                for(int i=0; i<InactivePlayers.Count && ActivePlayers.Count <= 4; i++)
+                {
+                    int player = InactivePlayers[i];
+                    InactivePlayers.Remove(player);
+                    OnConnect(player);
+                }
+            }
+            _refreshLobbyNextRound = false;
+            LobbyUpdate();
+        }
+
+        _winnersCount = 0;
     }
 }

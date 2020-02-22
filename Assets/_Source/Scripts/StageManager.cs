@@ -1,90 +1,94 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class StageManager : MonoBehaviour
+/*  TODO: Bu sınıf güzel ama pooling yapmıyor - Soru yapmalı mı? */
+public class StageManager : SingletonComponent<StageManager>
 {
-    static StageManager _instance;
-    public static StageManager Instance
-    {
-        get
-        {
-            return _instance ? _instance : _instance = FindObjectOfType<StageManager>();
-        }
-    }
+    /* update following value */
+    readonly Vector3 EXTREMES = new Vector3(5f, -5f, 0.3f);
+    /* update the value above */
 
-    static readonly Vector3 EXTREMES = new Vector3(5f, -6f, 2f);
+    public List<Ship> SceneShips;
 
-    const float _MIN_DIST_ = 10f;
-    const float _STEP_ = 0.05f;
+    public GameObject PlayerPrefab;
 
-    [SerializeField] GameObject[] Engine;
-    [SerializeField] GameObject[] FuelTank;
-    [SerializeField] GameObject[] Toilet;
+    public GameObject[] Engine;
+    public GameObject[] Toilet;
+    public GameObject[] FuelTank;
 
     readonly List<GameObject> _instantiated = new List<GameObject>();
 
-    List<Vector3> _players = new List<Vector3>();
+    public Player CreatePlayer(int playerId, int index)
+    {
+        Player player = Instantiate(
+            PlayerPrefab,
+            transform.GetChild(index).position,
+            transform.GetChild(index).rotation,
+            transform
+        ).GetComponent<Player>();
+
+        player.Initialize(playerId, index);
+
+        return player;
+    }
+
+    public void ResetPlayerTransform(Player player)
+    {
+        player.transform.SetParent(transform);
+        player.transform.position = transform.GetChild(player.Index).position;
+        player.transform.rotation = transform.GetChild(player.Index).rotation;
+    }
 
     public void Generate(int playerCount)
     {
-        foreach (Player player in FindObjectsOfType<Player>())
-        {
-            _players.Add(player.transform.position);
-        }
         PlaceObject(Engine, playerCount);
         PlaceObject(FuelTank, playerCount);
         PlaceObject(Toilet, playerCount);
-
-        /*
-        int counter = 0;
-        foreach (Ship ship in FindObjectsOfType<Ship>())
-        {
-            ship.OwnerId = ++counter;
-        }
-        */
     }
 
-    public void PlaceObject(GameObject[] obj, int count)
+    void PlaceObject(GameObject[] obj, int count)
     {
         count += Random.Range(0, 2);
+
         for (int i = 0; i < count; i++)
         {
-            Vector3 randomPosition;
-            float dist = _MIN_DIST_;
+            Vector3 position;
+            float dist = 10f;
             do
             {
-                randomPosition = new Vector3(Random.Range(-EXTREMES.x, EXTREMES.x), 0.2f, Random.Range(EXTREMES.y, EXTREMES.z));
-                if (Valid(dist, randomPosition))
+                position = new Vector3(Random.Range(-EXTREMES.x, EXTREMES.x), 0.2f, Random.Range(EXTREMES.y, EXTREMES.z));
+                if (Valid(dist, position))
                 {
-                    _instantiated.Add(Instantiate(obj[Random.Range(0,obj.Length)], randomPosition, Quaternion.identity, transform));
+                    _instantiated.Add(Instantiate(obj[Random.Range(0,obj.Length)], position, Quaternion.identity, transform));
                 }
                 else
                 {
-                    dist -= _STEP_;
-                    randomPosition = Vector3.negativeInfinity;
+                    dist -= 0.025f;
+                    position = Vector3.negativeInfinity;
                 }
             }
-            while (randomPosition.Equals(Vector3.negativeInfinity));
+            while (position.Equals(Vector3.negativeInfinity));
         }
     }
 
-    public bool Valid(float dist, Vector3 pos)
+    bool Valid(float dist, Vector3 pos)
     {
-        foreach(Vector3 playerpos in _players)
+        for (int i = 0; i < 4; i++)
         {
-            if (Vector3.Distance(pos, playerpos) < dist)
+            if (Vector3.Distance(pos, transform.GetChild(i).position) < dist)
             {
                 return false;
             }
         }
-        foreach(GameObject go in _instantiated)
+
+        foreach (GameObject go in _instantiated)
         {
             if (Vector3.Distance(pos, go.transform.position) < dist)
             {
                 return false;
             }
         }
+
         return true;
     }
 
@@ -95,17 +99,11 @@ public class StageManager : MonoBehaviour
             Destroy(_instantiated[i]);
         }
 
-        _players.Clear();
         _instantiated.Clear();
 
-        foreach(Ship ship in FindObjectsOfType<Ship>())
+        foreach(Ship ship in SceneShips)
         {
             ship.ResetShip();
-        }
-
-        foreach (Player player in FindObjectsOfType<Player>())
-        {
-            player.ResetPlayer();
         }
     }
 }

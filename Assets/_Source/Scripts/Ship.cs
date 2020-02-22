@@ -2,6 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
+/* TODO: Konuşmamız gereken şeyler var design üzerine*/
 public class Ship : MonoBehaviour
 {
     /* ui which belongs to the ship */
