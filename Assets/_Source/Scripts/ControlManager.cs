@@ -309,11 +309,33 @@ public class ControlManager : SingletonComponent<ControlManager>
         StartCoroutine(EndScreen());
     }
 
+    private int EndScreenCountdown = 7;
     IEnumerator EndScreen()
     {
+        List<Ship> survivingShips = new List<Ship>();
+        foreach (Ship ship in StageManager.Instance.SceneShips)
+        {
+            if (Random.Range(0, 1) > ship.SetTotalChancePoint())
+            {
+                // Exploded
+            }
+            else
+            {
+                survivingShips.Add(ship);
+            }
+        }
+
+        UIManager.Instance.ShowPanel(UIPanelType.Result, new ResultPanelData()
+        {
+            IsWin = survivingShips.Count > 0,
+            VictoriousPlayers = survivingShips,
+            CountDown = EndScreenCountdown
+        });
+        
         Camera.main.transform.DOMove(new Vector3(0f, 25f, -15f), 1f);
         Camera.main.transform.DORotate(Vector3.zero, 1f).OnComplete(() =>
         {
+            
             Sequence cinamatic = DOTween.Sequence();
             cinamatic.AppendInterval(1.5f);
             cinamatic.AppendCallback(() =>
@@ -321,7 +343,7 @@ public class ControlManager : SingletonComponent<ControlManager>
                 foreach (Ship ship in StageManager.Instance.SceneShips)
                 {
                     ship.UpdateStatusUI(false);
-                    if (Random.Range(0, 1) > ship.SetTotalChancePoint())
+                    if (!survivingShips.Contains(ship))
                     {
                         ship.Explode();
                         ship.transform.DOMoveY(10, 2);
@@ -334,7 +356,7 @@ public class ControlManager : SingletonComponent<ControlManager>
             });
         });
 
-        yield return new WaitForSeconds(7f);
+        yield return new WaitForSeconds(EndScreenCountdown);
 
         StageManager.Instance.Clean();
 
