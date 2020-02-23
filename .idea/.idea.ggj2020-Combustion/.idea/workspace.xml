@@ -36,6 +36,9 @@
     <setting file="file://$PROJECT_DIR$/Assets/_Source/Scripts/Lib/Utils/Utils.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/_Source/Scripts/Distraction.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/_Source/Scripts/Lib/Utils/SceneResourceManager.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/_Source/Scripts/Ui/Panel/titleScreenPanel/TitleScreenPanel.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/_Source/Scripts/Ui/Panel/titleScreenPanel/TitleScreenPanelData.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/_Source/Scripts/Ui/Panel/titleScreenPanel/TitleScreenView.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -45,7 +48,6 @@
         <option value="$PROJECT_DIR$/Assets/_Source/Scripts/Ui/Panel/resultPanel/SlotMachineView.cs" />
         <option value="$PROJECT_DIR$/Assets/_Source/Scripts/Lib/Components/BaseManager.cs" />
         <option value="$PROJECT_DIR$/Assets/_Source/Scripts/Ui/Panel/resultPanel/ResultPanelData.cs" />
-        <option value="$PROJECT_DIR$/Assets/_Source/Scripts/MainScene.cs" />
         <option value="$PROJECT_DIR$/Assets/_Source/Scripts/Lib/Utils/SceneResourceManager.cs" />
         <option value="$PROJECT_DIR$/Assets/_Source/Scripts/Lib/Ui/panels/BasePanel.cs" />
         <option value="$PROJECT_DIR$/Assets/_Source/Scripts/Ui/Panel/resultPanel/ResultView.cs" />
@@ -53,8 +55,12 @@
         <option value="$PROJECT_DIR$/Assets/_Source/Scripts/Ui/Panel/lobbyPanel/LobbyView.cs" />
         <option value="$PROJECT_DIR$/Assets/_Source/Scripts/Ui/Panel/lobbyPanel/LobbyPanelData.cs" />
         <option value="$PROJECT_DIR$/Assets/_Source/Scripts/Ui/Panel/lobbyPanel/LobbyPanel.cs" />
+        <option value="$PROJECT_DIR$/Assets/_Source/Scripts/Ui/Panel/titleScreenPanel/TitleScreenView.cs" />
+        <option value="$PROJECT_DIR$/Assets/_Source/Scripts/Ui/Panel/titleScreenPanel/TitleScreenPanelData.cs" />
         <option value="$PROJECT_DIR$/Assets/_Source/Scripts/Lib/Ui/managers/UIManager.cs" />
+        <option value="$PROJECT_DIR$/Assets/_Source/Scripts/MainScene.cs" />
         <option value="$PROJECT_DIR$/Assets/_Source/Scripts/ControlManager.cs" />
+        <option value="$PROJECT_DIR$/Assets/_Source/Scripts/Ui/Panel/titleScreenPanel/TitleScreenPanel.cs" />
       </list>
     </option>
   </component>
@@ -109,7 +115,7 @@
       <workItem from="1581262013647" duration="63000" />
       <workItem from="1581262114571" duration="3344000" />
       <workItem from="1582389955794" duration="7007000" />
-      <workItem from="1582453231311" duration="561000" />
+      <workItem from="1582453231311" duration="1087000" />
     </task>
     <servers />
   </component>
@@ -245,13 +251,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/Assets/_Source/Scripts/Lib/Ui/managers/UIManager.cs</url>
-          <line>61</line>
+          <line>62</line>
           <properties documentPath="$PROJECT_DIR$/Assets/_Source/Scripts/Lib/Ui/managers/UIManager.cs" initialLine="60">
             <startOffsets>
-              <option value="1869" />
+              <option value="1970" />
             </startOffsets>
             <endOffsets>
-              <option value="1886" />
+              <option value="1987" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="5" />

@@ -71,6 +71,11 @@
                   <e p="ResultPanelData.cs" t="Include" />
                   <e p="ResultView.cs" t="Include" />
                 </e>
+                <e p="titleScreenPanel" t="Include">
+                  <e p="TitleScreenPanel.cs" t="Include" />
+                  <e p="TitleScreenPanelData.cs" t="Include" />
+                  <e p="TitleScreenView.cs" t="Include" />
+                </e>
               </e>
             </e>
           </e>

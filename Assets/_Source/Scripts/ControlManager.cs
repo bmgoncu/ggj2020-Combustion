@@ -207,6 +207,8 @@ public class ControlManager : SingletonComponent<ControlManager>
         if (AirConsole.instance.GetMasterControllerDeviceId() == deviceId)
         {
             AirConsole.instance.Message(deviceId, "MASTER");
+            
+            UIManager.Instance.HidePanel(UIPanelType.TitleScreen);
             UIManager.Instance.ShowPanel(UIPanelType.Lobby, new LobbyPanelData());
         }
 
