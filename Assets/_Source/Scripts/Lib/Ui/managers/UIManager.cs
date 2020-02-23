@@ -31,6 +31,7 @@ public class UIManager : BaseManager<UIManager>
     {
         //_uiPanels.Add(UIPanelType.Hud, BasePanel<HudView>.Create<HudPanel>(this));
         _uiPanels.Add(UIPanelType.Result, BasePanel<ResultView>.Create<ResultPanel>(this));
+        _uiPanels.Add(UIPanelType.Lobby, BasePanel<LobbyView>.Create<LobbyPanel>(this));
     }
 
     /// <summary>
@@ -89,5 +90,6 @@ public class UIManager : BaseManager<UIManager>
 public enum UIPanelType
 {
     Hud,
-    Result
+    Result,
+    Lobby
 }

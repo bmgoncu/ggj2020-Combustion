@@ -207,6 +207,7 @@ public class ControlManager : SingletonComponent<ControlManager>
         if (AirConsole.instance.GetMasterControllerDeviceId() == deviceId)
         {
             AirConsole.instance.Message(deviceId, "MASTER");
+            UIManager.Instance.ShowPanel(UIPanelType.Lobby, new LobbyPanelData());
         }
 
         string color = "gray";
@@ -241,6 +242,8 @@ public class ControlManager : SingletonComponent<ControlManager>
     {
         _winnersCount = 0;
 
+        UIManager.Instance.HidePanel(UIPanelType.Lobby);
+        
         Camera.main.transform.DOMove(new Vector3(0f, 7f, -5f), 1f);
         Camera.main.transform.DORotate(70f * Vector3.right, 1f).OnComplete(() => {
             _hudUI.StartCountdown(3);
@@ -259,7 +262,6 @@ public class ControlManager : SingletonComponent<ControlManager>
     public void StartGame()
     {
         AirConsole.instance.SetActivePlayers(Mathf.Clamp(ActivePlayers.Count, _MIN_PLAYER_COUNT_, _MAX_PLAYER_COUNT_));
-
         foreach (var ship in StageManager.Instance.SceneShips)
         {
             ship.UpdateStatusUI(true);

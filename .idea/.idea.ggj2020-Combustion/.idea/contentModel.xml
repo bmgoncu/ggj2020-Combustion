@@ -61,6 +61,11 @@
             <e p="StageManager.cs" t="Include" />
             <e p="Ui" t="Include">
               <e p="Panel" t="Include">
+                <e p="lobbyPanel" t="Include">
+                  <e p="LobbyPanel.cs" t="Include" />
+                  <e p="LobbyPanelData.cs" t="Include" />
+                  <e p="LobbyView.cs" t="Include" />
+                </e>
                 <e p="resultPanel" t="Include">
                   <e p="ResultPanel.cs" t="Include" />
                   <e p="ResultPanelData.cs" t="Include" />

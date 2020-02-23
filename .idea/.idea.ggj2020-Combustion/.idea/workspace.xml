@@ -24,7 +24,10 @@
     <setting file="file://$PROJECT_DIR$/Assets/_Source/Scripts/SnapPoint.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/_Source/Scripts/StageManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/_Source/Scripts/MainScene.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/_Source/Scripts/Ui/Panel/lobbyPanel/LobbyPanel.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/_Source/Scripts/Lib/Ui/managers/UIManager.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/_Source/Scripts/Ui/Panel/lobbyPanel/LobbyPanelData.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/_Source/Scripts/Ui/Panel/lobbyPanel/LobbyView.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../_ViralGamesDEPO/_Libraries/CouchGameLibrary/Ui/managers/PopupManager.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/_Source/Scripts/Lib/Ui/controllers/BaseController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../_ViralGamesDEPO/_Libraries/CouchGameLibrary/Ui/managers/UIManager.cs" root0="SKIP_HIGHLIGHTING" />
@@ -41,14 +44,17 @@
         <option value="$PROJECT_DIR$/Assets/_Source/Scripts/Ui/Panel/resultPanel/SlotMachinePanel.cs" />
         <option value="$PROJECT_DIR$/Assets/_Source/Scripts/Ui/Panel/resultPanel/SlotMachineView.cs" />
         <option value="$PROJECT_DIR$/Assets/_Source/Scripts/Lib/Components/BaseManager.cs" />
-        <option value="$PROJECT_DIR$/Assets/_Source/Scripts/Lib/Ui/managers/UIManager.cs" />
         <option value="$PROJECT_DIR$/Assets/_Source/Scripts/Ui/Panel/resultPanel/ResultPanelData.cs" />
         <option value="$PROJECT_DIR$/Assets/_Source/Scripts/MainScene.cs" />
         <option value="$PROJECT_DIR$/Assets/_Source/Scripts/Lib/Utils/SceneResourceManager.cs" />
-        <option value="$PROJECT_DIR$/Assets/_Source/Scripts/ControlManager.cs" />
         <option value="$PROJECT_DIR$/Assets/_Source/Scripts/Lib/Ui/panels/BasePanel.cs" />
         <option value="$PROJECT_DIR$/Assets/_Source/Scripts/Ui/Panel/resultPanel/ResultView.cs" />
         <option value="$PROJECT_DIR$/Assets/_Source/Scripts/Ui/Panel/resultPanel/ResultPanel.cs" />
+        <option value="$PROJECT_DIR$/Assets/_Source/Scripts/Ui/Panel/lobbyPanel/LobbyView.cs" />
+        <option value="$PROJECT_DIR$/Assets/_Source/Scripts/Ui/Panel/lobbyPanel/LobbyPanelData.cs" />
+        <option value="$PROJECT_DIR$/Assets/_Source/Scripts/Ui/Panel/lobbyPanel/LobbyPanel.cs" />
+        <option value="$PROJECT_DIR$/Assets/_Source/Scripts/Lib/Ui/managers/UIManager.cs" />
+        <option value="$PROJECT_DIR$/Assets/_Source/Scripts/ControlManager.cs" />
       </list>
     </option>
   </component>
@@ -71,10 +77,10 @@
       <option name="pid" />
       <method v="2" />
     </configuration>
-    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" ignored-value-for-modified-check="18568">
+    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
       <option name="allowRunningInParallel" value="false" />
       <option name="listenPortForConnections" value="false" />
-      <option name="pid" value="18568" />
+      <option name="pid" />
       <method v="2" />
     </configuration>
   </component>
@@ -103,6 +109,7 @@
       <workItem from="1581262013647" duration="63000" />
       <workItem from="1581262114571" duration="3344000" />
       <workItem from="1582389955794" duration="7007000" />
+      <workItem from="1582453231311" duration="561000" />
     </task>
     <servers />
   </component>
@@ -238,13 +245,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/Assets/_Source/Scripts/Lib/Ui/managers/UIManager.cs</url>
-          <line>60</line>
+          <line>61</line>
           <properties documentPath="$PROJECT_DIR$/Assets/_Source/Scripts/Lib/Ui/managers/UIManager.cs" initialLine="60">
             <startOffsets>
-              <option value="1780" />
+              <option value="1869" />
             </startOffsets>
             <endOffsets>
-              <option value="1797" />
+              <option value="1886" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="5" />
