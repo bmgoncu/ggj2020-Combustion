@@ -56,6 +56,7 @@ GameObject:
   - component: {fileID: 1319478654652055192}
   - component: {fileID: 4716170079752225377}
   - component: {fileID: 2525338959704797282}
+  - component: {fileID: 608385258361649555}
   m_Layer: 0
   m_Name: FuelTank2
   m_TagString: Untagged
@@ -135,5 +136,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 812ef04ed0e374c7d9a691d2edd96ba5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ChancePoint: 1.23
+  _chancePoint: 0
   _type: 1
+--- !u!65 &608385258361649555
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6435615003359262397}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.36, y: 0.19934843, z: 0.42}
+  m_Center: {x: 0, y: 0.043432333, z: -0.11238822}

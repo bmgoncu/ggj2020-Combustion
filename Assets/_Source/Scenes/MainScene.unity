@@ -357,6 +357,18 @@ Transform:
   m_Father: {fileID: 888933351}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 165, z: 0}
+--- !u!114 &85926878 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3633304357289200747, guid: e7dd25e19b63e4c16a3a028601cffb50,
+    type: 3}
+  m_PrefabInstance: {fileID: 1316307879}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b03b3f55611f5472daeff866ffbcae5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &131800031
 GameObject:
   m_ObjectHideFlags: 0
@@ -901,6 +913,42 @@ RectTransform:
   m_AnchoredPosition: {x: -5, y: 0}
   m_SizeDelta: {x: -20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &386149518 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3633304357289200747, guid: e7dd25e19b63e4c16a3a028601cffb50,
+    type: 3}
+  m_PrefabInstance: {fileID: 1094680408}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b03b3f55611f5472daeff866ffbcae5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &429646662 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3633304357289200747, guid: e7dd25e19b63e4c16a3a028601cffb50,
+    type: 3}
+  m_PrefabInstance: {fileID: 196483678}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b03b3f55611f5472daeff866ffbcae5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &479960971 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3633304357289200747, guid: e7dd25e19b63e4c16a3a028601cffb50,
+    type: 3}
+  m_PrefabInstance: {fileID: 1746291191}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b03b3f55611f5472daeff866ffbcae5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &681341736
 GameObject:
   m_ObjectHideFlags: 0
@@ -1277,7 +1325,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9725ce6aea61245fdbf413119f93f5c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SceneShips: []
+  SceneShips:
+  - {fileID: 429646662}
+  - {fileID: 386149518}
+  - {fileID: 85926878}
+  - {fileID: 479960971}
   PlayerPrefab: {fileID: 2592358098132998745, guid: ec30447adfab74a0bb6eb03fe79aa5ec,
     type: 3}
   Engine:
@@ -1754,7 +1806,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e37d83ebce05ad74683fd3228dde9e7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  browserStartMode: 2
+  browserStartMode: 0
   controllerHtml: {fileID: 4900000, guid: f242dfdb333b848dabb9691929971f7a, type: 3}
   autoScaleCanvas: 1
 --- !u!4 &1222519060

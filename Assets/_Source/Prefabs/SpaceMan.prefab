@@ -712,6 +712,7 @@ GameObject:
   - component: {fileID: 8874551894833448240}
   - component: {fileID: 3519267571056548062}
   - component: {fileID: 5629610937189086359}
+  - component: {fileID: 7649470120953666856}
   m_Layer: 0
   m_Name: SpaceMan
   m_TagString: Untagged
@@ -787,6 +788,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 4
   m_CollisionDetection: 0
+--- !u!65 &7649470120953666856
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2592358098132998745}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.37, y: 0.34, z: 0.55}
+  m_Center: {x: 0, y: 0.19, z: 0}
 --- !u!1 &2728283791011649977
 GameObject:
   m_ObjectHideFlags: 0

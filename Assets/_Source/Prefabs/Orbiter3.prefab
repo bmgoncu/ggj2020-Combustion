@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5722746434140723607}
   - component: {fileID: 2042328438816941422}
   - component: {fileID: 6203773972856480103}
+  - component: {fileID: 3628263775310087592}
   m_Layer: 0
   m_Name: Orbiter3
   m_TagString: Untagged
@@ -98,8 +99,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 812ef04ed0e374c7d9a691d2edd96ba5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ChancePoint: 0.79
+  _chancePoint: 0
   _type: 0
+--- !u!65 &3628263775310087592
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 318375584508842418}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.7, y: 0.24124238, z: 1.07}
+  m_Center: {x: -0.00065571815, y: 0.11870028, z: -0.03489743}
 --- !u!1 &1423479377977141901
 GameObject:
   m_ObjectHideFlags: 0

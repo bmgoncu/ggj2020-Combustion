@@ -4,9 +4,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    /* TODO: following values should be calibrated */
-    const float _INTERACTION_DIST_ = 1f;
-    const float _SHIP_DISTANCE_ = 3f;
+    const float _SHIP_INTERACTION_DISTANCE_ = 1f;
     const float _VELOCITY_MULTIPLIER_ = 5f;
 
     [SerializeField] Transform _hand;
@@ -18,9 +16,14 @@ public class Player : MonoBehaviour
 
     public Ship Board { get; private set; }
 
+    public ShipComponent InRange { get; private set; }
+
     Animator _animator;
     ShipComponent _pickedComponent;
     Rigidbody _physicsBody;
+
+    public delegate void ShipComponentApproachedEvent(ShipComponent component);
+    public static ShipComponentApproachedEvent OnShipComponentApproached;
 
     void Awake()
     {
@@ -33,7 +36,6 @@ public class Player : MonoBehaviour
         Id = id;
     }
 
-    /* TODO: let's use better looking colors below */
     public void Initialize(int id, int index)
     {
         Initialize(id);
@@ -90,64 +92,61 @@ public class Player : MonoBehaviour
         }
     }
 
-    /*
-     * TODO: GetObjectInRange fonksiyonu değiştirilmeli mi?
-     * 1 - liste almaya gerek yok, bana en yakın lazım
-     * 2 - liste yakınlığa göre sıralı değil. İlk eleman daha uzakta olsa da range içerisindeyse alıyor.
-     * Ayrıca gemiye binme kontrolü vs burada olmalı gibi geliyor bana.
-     */
     public void DoAction()
     {
         if (Board)
         {
             return;
         }
+
+        float dist = float.MaxValue;
+        Ship ship = null;
+        foreach (Ship sceneShip in StageManager.Instance.SceneShips)
+        {
+            float currDist = Vector3.Distance(sceneShip.transform.position, transform.position);
+            if (currDist < dist && currDist < _SHIP_INTERACTION_DISTANCE_ && !sceneShip.Escaped)
+            {
+                dist = currDist;
+                ship = sceneShip;
+            }
+        }
+
         if (_pickedComponent == null)
         {
-            // Get advesary ships
-            var availableShips = GetObjectInRange<Ship>(_SHIP_DISTANCE_, (s) => s.Escaped == false/*s.OwnerId != Id*/);
-            var advesaryShip = (availableShips.Count > 0) ? availableShips[0] : null;
-            var availableShipParts = GetObjectInRange<ShipComponent>(_INTERACTION_DIST_, (sc) => !sc.IsUsed);
-            var selectedShipPart = (availableShipParts.Count > 0) ? availableShipParts[UnityEngine.Random.Range(0, availableShipParts.Count)] : null;
-
             bool shipiscloser = true;
-            if (selectedShipPart && advesaryShip)
+
+            if (InRange && ship)
             {
-                shipiscloser = Vector3.Distance(transform.position, advesaryShip.transform.position) < Vector3.Distance(transform.position, selectedShipPart.transform.position);
+                shipiscloser = Vector3.Distance(transform.position, ship.transform.position) < Vector3.Distance(transform.position, InRange.transform.position);
             }
 
-            if (advesaryShip != null && advesaryShip.transform.childCount > 0 && shipiscloser)
+            if (ship && ship.transform.childCount > 0 && shipiscloser)
             {
-                var stolenPart = advesaryShip.RemoveShipComponent();
+                var stolenPart = ship.RemoveShipComponent();
                 Pick(stolenPart);
                 foreach (Player player in FindObjectsOfType<Player>())
                 {
-                    if (player.Board == advesaryShip)
+                    if (player.Board == ship)
                     {
-                        player.GetOut(advesaryShip);
+                        player.GetOut(ship);
                     }
                 }
             }
-            else if (selectedShipPart != null && !selectedShipPart.IsUsed)
+            else if (InRange != null)
             {
-                Pick(selectedShipPart);
+                Pick(InRange);
+                InRange = null;
+                OnShipComponentApproached?.Invoke(null);
             }
         }
         else
         {
-            // Get my ship
-            var availableShips = GetObjectInRange<Ship>(_INTERACTION_DIST_, (s) => true/*s.OwnerId == Id*/);
-            var ownerShip = (availableShips.Count > 0) ? availableShips[0] : null;
-
-            if (ownerShip != null)
+            if (ship != null)
             {
-                if (_pickedComponent.Attach(ownerShip))
+                if (_pickedComponent.Attach(ship))
                 {
                     _pickedComponent = null;
                 }
-                /*
-                
-                */
             }
             else
             {
@@ -186,21 +185,6 @@ public class Player : MonoBehaviour
         return comp;
     }
 
-    private List<T> GetObjectInRange<T>(float range, Func<T, bool> condition) where T : MonoBehaviour
-    {
-        var emptyComponents = FindObjectsOfType<T>(); // <-- we eliminated?
-        List<T> results = new List<T>();
-        for (int i = 0; i < emptyComponents.Length; i++)
-        {
-            var comp = emptyComponents[i];
-            if (condition(comp) && Vector3.Distance(comp.transform.position, transform.position) < range)
-            {
-                results.Add(comp);
-            }
-        }
-        return results;
-    }
-
     public void OnBoard(Ship ship)
     {
         if (ship.Capacity > 0)
@@ -231,5 +215,25 @@ public class Player : MonoBehaviour
         _physicsBody.velocity = Vector2.zero;
 
         _animator.SetInteger("Param", 0);
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        InRange = other.GetComponent<ShipComponent>();
+        if (!InRange || InRange.IsUsed)
+        {
+            InRange = null;
+            return;
+        }
+        OnShipComponentApproached?.Invoke(InRange);
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (InRange)
+        {
+            InRange = null;
+            OnShipComponentApproached?.Invoke(null);
+        }
     }
 }

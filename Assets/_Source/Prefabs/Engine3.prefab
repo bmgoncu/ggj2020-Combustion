@@ -56,6 +56,7 @@ GameObject:
   - component: {fileID: 5925703106422247480}
   - component: {fileID: 72298383098899649}
   - component: {fileID: 3645891399546109483}
+  - component: {fileID: 4704598652764154456}
   m_Layer: 0
   m_Name: Engine3
   m_TagString: Untagged
@@ -138,6 +139,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _chancePoint: 0
   _type: 2
+--- !u!65 &4704598652764154456
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1818342590184151069}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.33, y: 0.19398916, z: 0.33}
+  m_Center: {x: -0.11966116, y: -0.01466595, z: 0.0000000037252903}
 --- !u!1001 &8194275697628577709
 PrefabInstance:
   m_ObjectHideFlags: 0
