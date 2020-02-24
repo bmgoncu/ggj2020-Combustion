@@ -2,6 +2,7 @@
 using UnityEngine;
 
 /*  TODO: Bu sınıf güzel ama pooling yapmıyor - Soru yapmalı mı? */
+// gerekmiyor şuanda, bir performans sorunu teşkil etmiyor
 public class StageManager : SingletonComponent<StageManager>
 {
     /* update following value */

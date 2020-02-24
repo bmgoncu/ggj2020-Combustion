@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="C:\Users\Burak\.Rider2019.3\system\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\Burak\.Rider2019.3\system\resharper-host\local\Transient\ReSharperHost\v193\SolutionCaches\_ggj2020-Combustion.185158966.00" t="ExcludeRecursive" />
+    <e p="D:\Projects\DEPO\ggj2020-Combustion" t="IncludeRecursive">
+      <e p="Assembly-CSharp-Editor.csproj" t="IncludeRecursive" />
+      <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
+      <e p="Assets" t="Include">
+        <e p="_Source" t="Include">
+          <e p="Scripts" t="Include">
+            <e p="ControlManager.cs" t="Include" />
+            <e p="Distraction.cs" t="Include" />
+            <e p="HudUI.cs" t="Include" />
+            <e p="Lib" t="Include">
+              <e p="Components" t="Include">
+                <e p="BaseManager.cs" t="Include" />
+                <e p="SingletonComponent.cs" t="Include" />
+              </e>
+              <e p="Ui" t="Include">
+                <e p="Components" t="Include">
+                  <e p="buttons" t="Include">
+                    <e p="BaseButton.cs" t="Include" />
+                  </e>
+                </e>
+                <e p="controllers" t="Include">
+                  <e p="BaseController.cs" t="Include" />
+                </e>
+                <e p="data" t="Include">
+                  <e p="BasePanelData.cs" t="Include" />
+                  <e p="BasePopupData.cs" t="Include" />
+                </e>
+                <e p="managers" t="Include">
+                  <e p="PopupManager.cs" t="Include" />
+                  <e p="UIManager.cs" t="Include" />
+                </e>
+                <e p="panels" t="Include">
+                  <e p="BasePanel.cs" t="Include" />
+                </e>
+                <e p="popups" t="Include">
+                  <e p="BasePopup.cs" t="Include" />
+                </e>
+                <e p="views" t="Include">
+                  <e p="BasePopupView.cs" t="Include" />
+                  <e p="BaseView.cs" t="Include" />
+                </e>
+              </e>
+              <e p="Utils" t="Include">
+                <e p="AsyncUtils.cs" t="Include" />
+                <e p="Extensions.cs" t="Include" />
+                <e p="SceneResourceManager.cs" t="Include" />
+                <e p="Utils.cs" t="Include" />
+              </e>
+            </e>
+            <e p="MainScene.cs" t="Include" />
+            <e p="Player.cs" t="Include" />
+            <e p="Ship.cs" t="Include" />
+            <e p="ShipComponent.cs" t="Include" />
+            <e p="ShipStatus.cs" t="Include" />
+            <e p="SnapPoint.cs" t="Include" />
+            <e p="StageManager.cs" t="Include" />
+            <e p="Ui" t="Include">
+              <e p="Panel" t="Include">
+                <e p="lobbyPanel" t="Include">
+                  <e p="LobbyPanel.cs" t="Include" />
+                  <e p="LobbyPanelData.cs" t="Include" />
+                  <e p="LobbyView.cs" t="Include" />
+                </e>
+                <e p="resultPanel" t="Include">
+                  <e p="ResultPanel.cs" t="Include" />
+                  <e p="ResultPanelData.cs" t="Include" />
+                  <e p="ResultView.cs" t="Include" />
+                </e>
+                <e p="titleScreenPanel" t="Include">
+                  <e p="TitleScreenPanel.cs" t="Include" />
+                  <e p="TitleScreenPanelData.cs" t="Include" />
+                  <e p="TitleScreenView.cs" t="Include" />
+                </e>
+              </e>
+            </e>
+          </e>
+        </e>
+        <e p="AirConsole" t="Include">
+          <e p="examples" t="Include">
+            <e p="basic" t="Include">
+              <e p="ExampleBasicLogic.cs" t="Include" />
+            </e>
+            <e p="gamestates" t="Include">
+              <e p="GamestateExampleLogic.cs" t="Include" />
+            </e>
+            <e p="gyroscope" t="Include">
+              <e p="GyroscopeExampleLogic.cs" t="Include" />
+            </e>
+            <e p="platformer" t="Include">
+              <e p="PlatformerExampleLogic.cs" t="Include" />
+              <e p="Player_Platformer.cs" t="Include" />
+            </e>
+            <e p="pong" t="Include">
+              <e p="ExamplePongLogic.cs" t="Include" />
+              <e p="Scripts" t="Include">
+                <e p="Racket.cs" t="Include" />
+              </e>
+            </e>
+            <e p="swipe" t="Include">
+              <e p="Player_Swipe.cs" t="Include" />
+            </e>
+          </e>
+          <e p="extras" t="Include">
+            <e p="HighScoreHelper.cs" t="Include" />
+          </e>
+          <e p="plugins" t="Include">
+            <e p="Editor" t="Include">
+              <e p="UnityWebViewPostprocessBuild.cs" t="Include" />
+            </e>
+            <e p="WebViewObject.cs" t="Include" />
+          </e>
+          <e p="README.txt" t="Include" />
+          <e p="Scripts" t="Include">
+            <e p="AirConsole.cs" t="Include" />
+            <e p="DebugLevel.cs" t="Include" />
+            <e p="Editor" t="Include">
+              <e p="Extentions.cs" t="Include" />
+              <e p="Inspector.cs" t="Include" />
+              <e p="PlayMode.cs" t="Include" />
+              <e p="PostBuildProcess.cs" t="Include" />
+              <e p="SettingWindow.cs" t="Include" />
+              <e p="WebListener.cs" t="Include" />
+            </e>
+            <e p="Settings.cs" t="Include" />
+            <e p="WebsocketListener.cs" t="Include" />
+          </e>
+        </e>
+        <e p="Demigiant" t="Include">
+          <e p="DOTween" t="Include">
+            <e p="Modules" t="Include">
+              <e p="DOTweenModuleAudio.cs" t="Include" />
+              <e p="DOTweenModulePhysics.cs" t="Include" />
+              <e p="DOTweenModulePhysics2D.cs" t="Include" />
+              <e p="DOTweenModuleSprite.cs" t="Include" />
+              <e p="DOTweenModuleUI.cs" t="Include" />
+              <e p="DOTweenModuleUnityVersion.cs" t="Include" />
+              <e p="DOTweenModuleUtils.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+      </e>
+      <e p="ggj2020-Combustion.sln" t="IncludeFlat" />
+      <e p="obj" t="ExcludeRecursive" />
+      <e p="Packages" t="ExcludeRecursive" />
+      <e p="Temp\bin" t="ExcludeRecursive" />
+    </e>
+  </component>
+</project>
