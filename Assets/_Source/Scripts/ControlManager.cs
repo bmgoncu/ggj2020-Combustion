@@ -103,8 +103,6 @@ public class ControlManager : SingletonComponent<ControlManager>
         }
     }
 
-    // TODO: bu metotta bitmiş gemiye biniyor mu kontrolü var.
-    // Yakındaki geminin alındığı fonksiyona taşınmalı.
     void OnMessage(int from, JToken data)
     {
         if (from == AirConsole.instance.GetMasterControllerDeviceId())
@@ -126,49 +124,7 @@ public class ControlManager : SingletonComponent<ControlManager>
         // we can send action as true/false again.
         if ((int)data["action"] == 1)
         {
-            bool flag = false;
-
-            if (!ActivePlayers[from].Board)
-            {
-                foreach (Ship ship in StageManager.Instance.SceneShips)
-                {
-                    if (Vector3.Distance(ship.transform.position, ActivePlayers[from].transform.position) < 3f)
-                    {
-                        int ftc = 0, orc = 0, enc = 0;
-                        foreach (ShipComponent shipComponent in ship.CurrentComponents)
-                        {
-                            if (shipComponent.Type == ShipComponentType.ENGINE)
-                            {
-                                enc++;
-                            }
-                            if (shipComponent.Type == ShipComponentType.FUEL_TANK)
-                            {
-                                ftc++;
-                            }
-                            if (shipComponent.Type == ShipComponentType.ORBITER)
-                            {
-                                orc++;
-                            }
-                        }
-                        if (enc != 0 && orc != 0 && ftc != 0)
-                        {
-                            ActivePlayers[from].OnBoard(ship);
-                            flag = true;
-                        }
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                Escape(ActivePlayers[from].Board);
-                flag = true;
-            }
-
-            if (!flag)
-            {
-                ActivePlayers[from].DoAction();
-            }
+            ActivePlayers[from].DoAction();
         }
     }
 
@@ -273,7 +229,7 @@ public class ControlManager : SingletonComponent<ControlManager>
         Distraction.Instance.EnableDistraction();
     }
 
-    void Escape(Ship ship)
+    public void Escape(Ship ship)
     {
         foreach (Player player in ActivePlayers.Values)
         {

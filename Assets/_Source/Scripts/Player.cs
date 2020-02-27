@@ -115,20 +115,43 @@ public class Player : MonoBehaviour
         {
             bool shipiscloser = true;
 
+            bool engine = false, fuelTank = false, orbiter = false;
+
             if (InRange && ship)
             {
                 shipiscloser = Vector3.Distance(transform.position, ship.transform.position) < Vector3.Distance(transform.position, InRange.transform.position);
+
+                foreach (ShipComponent shipComponent in ship.CurrentComponents)
+                {
+                    engine |= shipComponent.Type == ShipComponentType.ENGINE;
+                    fuelTank |= shipComponent.Type == ShipComponentType.FUEL_TANK;
+                    orbiter |= shipComponent.Type == ShipComponentType.ORBITER;
+                }
             }
 
             if (ship && ship.transform.childCount > 0 && shipiscloser)
             {
-                var stolenPart = ship.RemoveShipComponent();
-                Pick(stolenPart);
-                foreach (Player player in FindObjectsOfType<Player>())
+                if (engine && fuelTank && orbiter)
                 {
-                    if (player.Board == ship)
+                    if (Board == null)
                     {
-                        player.GetOut(ship);
+                        OnBoard(ship);
+                    }
+                    else
+                    {
+                        ControlManager.Instance.Escape(Board);
+                    }
+                }
+                else
+                {
+                    ShipComponent stolenPart = ship.RemoveShipComponent();
+                    Pick(stolenPart);
+                    foreach (Player player in FindObjectsOfType<Player>())
+                    {
+                        if (player.Board == ship)
+                        {
+                            player.GetOut(ship);
+                        }
                     }
                 }
             }
